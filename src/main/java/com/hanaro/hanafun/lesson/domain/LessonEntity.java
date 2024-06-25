@@ -1,6 +1,7 @@
 package com.hanaro.hanafun.lesson.domain;
 
-import com.hanaro.hanafun.category.domain.Category;
+import com.hanaro.hanafun.category.domain.CategoryEntity;
+import com.hanaro.hanafun.host.domain.HostEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -15,18 +16,18 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @DynamicInsert
-public class Lesson {
+public class LessonEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long lessonId;
 
     @ManyToOne
     @JoinColumn(name = "host_id", nullable = false)
-    private Host host;
+    private HostEntity hostEntity;
 
     @OneToOne
     @JoinColumn(name = "category_id", nullable = false)
-    private Category category;
+    private CategoryEntity categoryEntity;
 
     @Column(nullable = false, length = 30)
     private String title;
