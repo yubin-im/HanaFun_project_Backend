@@ -5,6 +5,7 @@ import com.hanaro.hanafun.reservation.dto.response.MyPageResDto;
 import com.hanaro.hanafun.reservation.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ReservationController {
     private final ReservationService reservationService;
 
-    @GetMapping("/reservation/my")
+    @PostMapping("/reservation/my")
     public MyPageResDto myPage(@RequestBody MyPageReqDto myPageReqDto) {
         return reservationService.myPage(myPageReqDto);
     }
