@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,7 +31,10 @@ public class ReservationServiceImpl implements ReservationService {
         UserEntity user = userRepository.findById(myPageReqDto.getUserId()).orElse(null);
         List<ReservationEntity> reservations = reservationRepository.findReservationEntitiesByUserEntity(user);
 
+        LocalDate today = LocalDate.now();  // 오늘이후 날짜의 예약만 출력
+
         List<ReservationList> lessons = reservations.stream()
+                .filter(reservation -> !reservation.getLessonDateEntity().getDate().isBefore(today))
                 .map(reservation -> {
                     LessonDateEntity lessonDate = reservation.getLessonDateEntity();
                     LessonEntity lessonEntity = lessonDate.getLessonEntity();
@@ -41,7 +45,7 @@ public class ReservationServiceImpl implements ReservationService {
                             .lessonId(lessonEntity.getLessonId())
                             .image(lessonEntity.getImage())
                             .title(lessonEntity.getTitle())
-                            .location(lessonEntity.getTitle())
+                            .location(lessonEntity.getLocation())
                             .date(lessonDate.getDate())
                             .build();
                     return lesson;
