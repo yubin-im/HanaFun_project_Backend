@@ -21,16 +21,18 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     @Override
     public List<CategoryResDto> categoryList() {
-        List<CategoryResDto> categoryResDtoList = new ArrayList<>();
         List<CategoryEntity> categoryEntities = categoryRepository.findAll();
 
-        for(int i = 0; i < categoryEntities.size(); i++) {
-            CategoryResDto categoryResDto = CategoryResDto.builder()
-                    .categoryId(categoryEntities.get(i).getCategoryId())
-                    .categoryName(categoryEntities.get(i).getCategoryName())
-                    .build();
-            categoryResDtoList.add(categoryResDto);
-        }
+        List<CategoryResDto> categoryResDtoList = categoryEntities.stream()
+                .map(categoryEntity -> {
+                    CategoryResDto categoryResDto = CategoryResDto.builder()
+                            .categoryId(categoryEntity.getCategoryId())
+                            .categoryName(categoryEntity.getCategoryName())
+                            .build();
+                    return categoryResDto;
+                })
+                .collect(Collectors.toList());
+
         return categoryResDtoList;
     }
 }
