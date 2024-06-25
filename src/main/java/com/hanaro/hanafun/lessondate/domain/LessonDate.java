@@ -1,40 +1,41 @@
-package com.hanaro.hanafun.reservation.domain;
+package com.hanaro.hanafun.lessondate.domain;
 
-import com.hanaro.hanafun.lessondate.domain.LessonDate;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Reservation")
+@Table(name = "LessonDate")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @AllArgsConstructor
 @DynamicInsert
-public class Reservation {
+public class LessonDate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long reservationId;
+    private Long lessondateId;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "lesson_id", nullable = false)
+    private Lesson lesson;
 
-    @ManyToOne
-    @JoinColumn(name = "lessondate_id", nullable = false)
-    private LessonDate lessonDate;
+    @Column(nullable = false)
+    private LocalDate date;
+
+    @Column(nullable = false)
+    private LocalDateTime startTime;
+
+    @Column(nullable = false)
+    private LocalDateTime endTime;
 
     @ColumnDefault("0")
     @Column(nullable = false)
     private int applicant;
-
-    @ColumnDefault("0")
-    @Column(nullable = false)
-    private boolean isDeleted;
 
     @Column(nullable = false)
     private LocalDateTime createdDate;
