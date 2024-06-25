@@ -1,6 +1,7 @@
 package com.hanaro.hanafun.reservation.domain;
 
-import com.hanaro.hanafun.lessondate.domain.LessonDate;
+import com.hanaro.hanafun.lessondate.domain.LessonDateEntity;
+import com.hanaro.hanafun.user.domain.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -15,18 +16,18 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @DynamicInsert
-public class Reservation {
+public class ReservationEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reservationId;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private UserEntity userEntity;
 
     @ManyToOne
     @JoinColumn(name = "lessondate_id", nullable = false)
-    private LessonDate lessonDate;
+    private LessonDateEntity lessonDateEntity;
 
     @ColumnDefault("0")
     @Column(nullable = false)

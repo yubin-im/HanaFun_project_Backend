@@ -1,6 +1,6 @@
 package com.hanaro.hanafun.lessondate.domain;
 
-import com.hanaro.hanafun.lesson.domain.Lesson;
+import com.hanaro.hanafun.lesson.domain.LessonEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -16,14 +16,14 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @DynamicInsert
-public class LessonDate {
+public class LessonDateEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long lessondateId;
 
     @ManyToOne
     @JoinColumn(name = "lesson_id", nullable = false)
-    private Lesson lesson;
+    private LessonEntity lessonEntity;
 
     @Column(nullable = false)
     private LocalDate date;
