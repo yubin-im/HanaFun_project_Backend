@@ -1,0 +1,11 @@
+spring:
+  jpa:
+    database: mysql
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+  datasource:
+    url: jdbc:mysql://database-hanafun.cbmoo6w6k67n.ap-northeast-2.rds.amazonaws.com:3306/hanafun
+    username: admin
+    password: hanafun!
+    driver-class-name: com.mysql.cj.jdbc.Driver
