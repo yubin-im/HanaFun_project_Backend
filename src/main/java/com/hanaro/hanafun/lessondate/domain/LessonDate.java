@@ -1,5 +1,6 @@
 package com.hanaro.hanafun.lessondate.domain;
 
+import com.hanaro.hanafun.lesson.domain.Lesson;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
