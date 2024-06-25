@@ -10,7 +10,7 @@ import org.hibernate.annotations.DynamicInsert;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Lesson")
+@Table(name = "lesson")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
