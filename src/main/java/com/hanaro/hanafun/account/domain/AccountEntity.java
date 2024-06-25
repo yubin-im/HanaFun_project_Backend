@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Account")
@@ -23,8 +23,8 @@ public class AccountEntity {
     @Column(name = "account_id")
     private Long accountId;
 
-    @JoinColumn(name = "user_id")
     @ManyToOne(optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private UserEntity userEntity;
 
     @Column(name = "account_number", length = 20, nullable = false)
@@ -46,8 +46,8 @@ public class AccountEntity {
     private Boolean isDeleted;
 
     @Column(name = "created_date", nullable = false)
-    private LocalDate createdDate;
+    private LocalDateTime createdDate;
 
     @Column(name = "updated_date", nullable = false)
-    private LocalDate updatedDate;
+    private LocalDateTime updatedDate;
 }
