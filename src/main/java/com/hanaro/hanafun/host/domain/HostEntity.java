@@ -9,7 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Host")
@@ -24,20 +24,20 @@ public class HostEntity {
     @Column(name = "host_id")
     private Long hostId;
 
-    @JoinColumn(name = "user_id")
     @OneToOne(optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private UserEntity userEntity;
 
     @Column(name = "introduction", length = 255, nullable = false)
     private String introduction;
 
-    @Column(name = "account_id")
     @OneToOne(optional = false)
+    @JoinColumn(name = "account_id", nullable = false)
     private AccountEntity accountEntity;
 
     @Column(name = "created_date", nullable = false)
-    private LocalDate createdDate;
+    private LocalDateTime createdDate;
 
     @Column(name = "updated_date", nullable = false)
-    private LocalDate updatedDate;
+    private LocalDateTime updatedDate;
 }
