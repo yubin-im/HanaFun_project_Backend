@@ -1,4 +1,4 @@
-package com.hanaro.hanafun.common.exception;
+package com.hanaro.hanafun.common.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
