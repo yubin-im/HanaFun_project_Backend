@@ -1,5 +1,6 @@
 package com.hanaro.hanafun.reservation.controller;
 
+import com.hanaro.hanafun.common.dto.ApiResponse;
 import com.hanaro.hanafun.reservation.dto.request.MyPageReqDto;
 import com.hanaro.hanafun.reservation.dto.response.MyPageResDto;
 import com.hanaro.hanafun.reservation.service.ReservationService;
@@ -14,8 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class ReservationController {
     private final ReservationService reservationService;
 
-    @PostMapping("/reservation/my")
-    public MyPageResDto myPage(@RequestBody MyPageReqDto myPageReqDto) {
+    @GetMapping("/reservation/my")
+    public ApiResponse<MyPageResDto> myPage(@RequestBody MyPageReqDto myPageReqDto) {
         return reservationService.myPage(myPageReqDto);
     }
 }

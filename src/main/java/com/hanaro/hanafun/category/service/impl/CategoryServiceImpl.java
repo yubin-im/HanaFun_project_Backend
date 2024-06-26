@@ -4,6 +4,7 @@ import com.hanaro.hanafun.category.domain.CategoryEntity;
 import com.hanaro.hanafun.category.domain.CategoryRepository;
 import com.hanaro.hanafun.category.dto.response.CategoryResDto;
 import com.hanaro.hanafun.category.service.CategoryService;
+import com.hanaro.hanafun.common.dto.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +21,7 @@ public class CategoryServiceImpl implements CategoryService {
     // 카테고리 전체 출력
     @Transactional
     @Override
-    public List<CategoryResDto> categoryList() {
+    public ApiResponse<List<CategoryResDto>> categoryList() {
         List<CategoryEntity> categoryEntities = categoryRepository.findAll();
 
         List<CategoryResDto> categoryResDtoList = categoryEntities.stream()
@@ -33,6 +34,12 @@ public class CategoryServiceImpl implements CategoryService {
                 })
                 .collect(Collectors.toList());
 
-        return categoryResDtoList;
+        ApiResponse<List<CategoryResDto>> response = new ApiResponse<>(
+                true,
+                "카테고리 전체 출력 완료",
+                categoryResDtoList
+        );
+
+        return response;
     }
 }

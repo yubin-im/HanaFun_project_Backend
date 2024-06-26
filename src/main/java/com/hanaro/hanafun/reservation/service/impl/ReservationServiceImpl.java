@@ -1,5 +1,6 @@
 package com.hanaro.hanafun.reservation.service.impl;
 
+import com.hanaro.hanafun.common.dto.ApiResponse;
 import com.hanaro.hanafun.lesson.domain.LessonEntity;
 import com.hanaro.hanafun.lessondate.domain.LessonDateEntity;
 import com.hanaro.hanafun.reservation.domain.ReservationEntity;
@@ -27,7 +28,7 @@ public class ReservationServiceImpl implements ReservationService {
     // 마이페이지 데이터 출력
     @Transactional
     @Override
-    public MyPageResDto myPage(MyPageReqDto myPageReqDto) {
+    public ApiResponse<MyPageResDto> myPage(MyPageReqDto myPageReqDto) {
         UserEntity user = userRepository.findById(myPageReqDto.getUserId()).orElse(null);
         List<ReservationEntity> reservations = reservationRepository.findReservationEntitiesByUserEntity(user);
 
@@ -56,6 +57,12 @@ public class ReservationServiceImpl implements ReservationService {
                 .point(user.getPoint())
                 .lessons(lessons).build();
 
-        return myPageResDto;
+        ApiResponse<MyPageResDto> response = new ApiResponse<>(
+                true,
+                "마이페이지 출력 완료",
+                myPageResDto
+        );
+
+        return response;
     }
 }
