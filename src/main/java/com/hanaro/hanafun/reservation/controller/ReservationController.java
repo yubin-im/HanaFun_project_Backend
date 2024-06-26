@@ -10,6 +10,7 @@ import com.hanaro.hanafun.reservation.dto.response.MyScheduleResDto;
 import com.hanaro.hanafun.reservation.dto.response.ReservationList;
 import com.hanaro.hanafun.reservation.service.ReservationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,25 +23,29 @@ public class ReservationController {
 
     // 마이페이지 데이터 출력
     @GetMapping("/my")
-    public ApiResponse<MyPageResDto> myPage(@RequestBody MyPageReqDto myPageReqDto) {
-        return reservationService.myPage(myPageReqDto);
+    public ResponseEntity<ApiResponse> myPage(@RequestBody MyPageReqDto myPageReqDto) {
+        MyPageResDto myPageResDto = reservationService.myPage(myPageReqDto);
+        return ResponseEntity.ok(new ApiResponse<>(true, "ok", myPageResDto));
     }
 
     // 나의 신청 클래스 데이터 출력
     @GetMapping("/my/lessons")
-    public ApiResponse<List<ReservationList>> myLessons(@RequestBody MyPageReqDto myPageReqDto) {
-        return reservationService.myLessons(myPageReqDto);
+    public ResponseEntity<ApiResponse> myLessons(@RequestBody MyPageReqDto myPageReqDto) {
+        List<ReservationList> lessons = reservationService.myLessons(myPageReqDto);
+        return ResponseEntity.ok(new ApiResponse<>(true, "ok", lessons));
     }
 
     // 신청 클래스 일정 데이터 출력
     @GetMapping("/my/schedule")
-    public ApiResponse<List<MyScheduleResDto>> mySchedules(@RequestBody MyScheduleReqDto myScheduleReqDto) {
-        return reservationService.mySchedules(myScheduleReqDto);
+    public ResponseEntity<ApiResponse> mySchedules(@RequestBody MyScheduleReqDto myScheduleReqDto) {
+        List<MyScheduleResDto> mySchedules = reservationService.mySchedules(myScheduleReqDto);
+        return ResponseEntity.ok(new ApiResponse<>(true, "ok", mySchedules));
     }
 
     // 개설 클래스 상세- 강좌날짜 별 예약자 정보 출력
     @PostMapping("/my/opened/people")
-    public ApiResponse<LessonDateDetailResDto> lessonDateDetail(@RequestBody LessonDateDetailReqDto lessonDateDetailReqDto) {
-        return reservationService.lessonDateDetail(lessonDateDetailReqDto);
+    public ResponseEntity<ApiResponse> lessonDateDetail(@RequestBody LessonDateDetailReqDto lessonDateDetailReqDto) {
+        LessonDateDetailResDto lessonDateDetailResDto = reservationService.lessonDateDetail(lessonDateDetailReqDto);
+        return ResponseEntity.ok(new ApiResponse<>(true, "ok", lessonDateDetailResDto));
     }
 }
