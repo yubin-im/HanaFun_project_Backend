@@ -1,8 +1,10 @@
 package com.hanaro.hanafun.reservation.controller;
 
 import com.hanaro.hanafun.common.dto.ApiResponse;
+import com.hanaro.hanafun.reservation.dto.request.LessonDateDetailReqDto;
 import com.hanaro.hanafun.reservation.dto.request.MyPageReqDto;
 import com.hanaro.hanafun.reservation.dto.request.MyScheduleReqDto;
+import com.hanaro.hanafun.reservation.dto.response.LessonDateDetailResDto;
 import com.hanaro.hanafun.reservation.dto.response.MyPageResDto;
 import com.hanaro.hanafun.reservation.dto.response.MyScheduleResDto;
 import com.hanaro.hanafun.reservation.dto.response.ReservationList;
@@ -34,5 +36,11 @@ public class ReservationController {
     @GetMapping("/my/schedule")
     public ApiResponse<List<MyScheduleResDto>> mySchedules(@RequestBody MyScheduleReqDto myScheduleReqDto) {
         return reservationService.mySchedules(myScheduleReqDto);
+    }
+
+    // 개설 클래스 상세- 강좌날짜 별 예약자 정보 출력
+    @PostMapping("/my/opened/people")
+    public ApiResponse<LessonDateDetailResDto> lessonDateDetail(@RequestBody LessonDateDetailReqDto lessonDateDetailReqDto) {
+        return reservationService.lessonDateDetail(lessonDateDetailReqDto);
     }
 }

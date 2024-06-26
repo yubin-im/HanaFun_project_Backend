@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface ReservationRepository extends JpaRepository<ReservationEntity, Long> {
     List<ReservationEntity> findReservationEntitiesByUserEntity(UserEntity userEntity);
+    List<ReservationEntity> findReservationEntitiesByLessonDateEntity_LessondateId(Long lessondateId);
 }

@@ -3,13 +3,14 @@ package com.hanaro.hanafun.reservation.service.impl;
 import com.hanaro.hanafun.common.dto.ApiResponse;
 import com.hanaro.hanafun.lesson.domain.LessonEntity;
 import com.hanaro.hanafun.lessondate.domain.LessonDateEntity;
+import com.hanaro.hanafun.lessondate.domain.LessonDateRepository;
+import com.hanaro.hanafun.lessondate.exception.LessonDateNotFoundException;
 import com.hanaro.hanafun.reservation.domain.ReservationEntity;
 import com.hanaro.hanafun.reservation.domain.ReservationRepository;
+import com.hanaro.hanafun.reservation.dto.request.LessonDateDetailReqDto;
 import com.hanaro.hanafun.reservation.dto.request.MyPageReqDto;
 import com.hanaro.hanafun.reservation.dto.request.MyScheduleReqDto;
-import com.hanaro.hanafun.reservation.dto.response.MyPageResDto;
-import com.hanaro.hanafun.reservation.dto.response.MyScheduleResDto;
-import com.hanaro.hanafun.reservation.dto.response.ReservationList;
+import com.hanaro.hanafun.reservation.dto.response.*;
 import com.hanaro.hanafun.reservation.service.ReservationService;
 import com.hanaro.hanafun.user.domain.UserEntity;
 import com.hanaro.hanafun.user.domain.UserRepository;
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
 public class ReservationServiceImpl implements ReservationService {
     private final ReservationRepository reservationRepository;
     private final UserRepository userRepository;
+    private final LessonDateRepository lessonDateRepository;
 
     // 마이페이지 데이터 출력
     @Transactional
@@ -135,6 +137,43 @@ public class ReservationServiceImpl implements ReservationService {
                 true,
                 "나의 신청 클래스 출력 완료",
                 mySchedules
+        );
+
+        return response;
+    }
+
+    // 개설 클래스 상세- 강좌날짜 별 예약자 정보 출력
+    @Transactional
+    @Override
+    public ApiResponse<LessonDateDetailResDto> lessonDateDetail(LessonDateDetailReqDto lessonDateDetailReqDto) {
+        Long lessondateId = lessonDateDetailReqDto.getLessondateId();
+        LessonDateEntity lessonDate = lessonDateRepository.findById(lessondateId).orElseThrow(() -> new LessonDateNotFoundException());
+        List<ReservationEntity> reservations = reservationRepository.findReservationEntitiesByLessonDateEntity_LessondateId(lessondateId);
+
+        int applicant = lessonDate.getApplicant();  // 신청인원
+        int capacity = lessonDate.getLessonEntity().getCapacity();  // 모집인원
+
+        List<ReservationPerson> people = reservations.stream()
+                .map(reservation -> {
+                    ReservationPerson person = ReservationPerson.builder()
+                            .startTime(lessonDate.getStartTime())
+                            .userName(reservation.getUserEntity().getUserName())
+                            .email(reservation.getUserEntity().getEmail())
+                            .build();
+                    return person;
+                })
+                .collect(Collectors.toList());
+
+        LessonDateDetailResDto lessonDateDetailResDto = LessonDateDetailResDto.builder()
+                .applicant(applicant)
+                .capacity(capacity)
+                .people(people)
+                .build();
+
+        ApiResponse<LessonDateDetailResDto> response = new ApiResponse<>(
+                true,
+                "예약자 정보 출력 완료",
+                lessonDateDetailResDto
         );
 
         return response;
