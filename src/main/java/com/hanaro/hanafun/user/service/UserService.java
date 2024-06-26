@@ -8,8 +8,8 @@ import com.hanaro.hanafun.user.dto.PointResDto;
 public interface UserService {
     LoginResDto login(LoginReqDto loginReqDto);
 
-    PointResDto getPoint(Long userId);
+    PointResDto readPoint(Long userId);
 
-    IsHostResDto isHost(Long userId);
+    IsHostResDto readIsHost(Long userId);
 
 }

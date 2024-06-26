@@ -1,8 +1,6 @@
 package com.hanaro.hanafun.common.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.*;
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -20,4 +18,17 @@ public abstract class BaseEntity {
 
     @LastModifiedDate
     private LocalDateTime updatedDate;
+
+    @PrePersist
+    protected void onCreate() {
+        if (createdDate == null) {
+            createdDate = LocalDateTime.now();
+        }
+        updatedDate = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedDate = LocalDateTime.now();
+    }
 }
