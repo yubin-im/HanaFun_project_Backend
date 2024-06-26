@@ -1,26 +1,20 @@
 package com.hanaro.hanafun.user.domain;
 
+import com.hanaro.hanafun.common.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.DynamicUpdate;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
-@Table(name="User")
-@Data
-@Builder
-@AllArgsConstructor
+@Table(name="user")
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@DynamicUpdate
-public class UserEntity {
+public class UserEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="user_id")
     private Long userId;
 
-    @Column(name="user_name", length = 255, nullable = false)
+    @Column(name="username", nullable = false)
     private String userName;
 
     @Column(name="password", length = 20, nullable = false)
@@ -29,7 +23,7 @@ public class UserEntity {
     @Column(name = "point", nullable = false)
     private Integer point;
 
-    @Column(name = "email", length = 255, nullable = false)
+    @Column(name = "email", nullable = false)
     private String email;
 
     @Column(name = "is_host", nullable = false)
@@ -37,10 +31,4 @@ public class UserEntity {
 
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted;
-
-    @Column(name = "created_date", nullable = false)
-    private LocalDateTime createdDate;
-
-    @Column(name = "updated_date", nullable = false)
-    private LocalDateTime updatedDate;
 }
