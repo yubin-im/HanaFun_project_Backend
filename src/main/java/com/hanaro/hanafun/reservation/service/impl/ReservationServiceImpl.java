@@ -55,12 +55,47 @@ public class ReservationServiceImpl implements ReservationService {
 
         MyPageResDto myPageResDto = MyPageResDto.builder()
                 .point(user.getPoint())
-                .lessons(lessons).build();
+                .lessons(lessons)
+                .build();
 
         ApiResponse<MyPageResDto> response = new ApiResponse<>(
                 true,
                 "마이페이지 출력 완료",
                 myPageResDto
+        );
+
+        return response;
+    }
+
+    // 나의 신청 클래스 데이터 출력
+    @Transactional
+    @Override
+    public ApiResponse<List<ReservationList>> myLessons(MyPageReqDto myPageReqDto) {
+        UserEntity user = userRepository.findById(myPageReqDto.getUserId()).orElse(null);
+        List<ReservationEntity> reservations = reservationRepository.findReservationEntitiesByUserEntity(user);
+
+        List<ReservationList> lessons = reservations.stream()
+                .map(reservation -> {
+                    LessonDateEntity lessonDate = reservation.getLessonDateEntity();
+                    LessonEntity lessonEntity = lessonDate.getLessonEntity();
+
+                    ReservationList lesson = ReservationList.builder()
+                            .reservationId(reservation.getReservationId())
+                            .lessondateId(lessonDate.getLessondateId())
+                            .lessonId(lessonEntity.getLessonId())
+                            .image(lessonEntity.getImage())
+                            .title(lessonEntity.getTitle())
+                            .location(lessonEntity.getLocation())
+                            .date(lessonDate.getDate())
+                            .build();
+                    return lesson;
+                })
+                .collect(Collectors.toList());
+
+        ApiResponse<List<ReservationList>> response = new ApiResponse<>(
+                true,
+                "나의 신청 클래스 출력 완료",
+                lessons
         );
 
         return response;
