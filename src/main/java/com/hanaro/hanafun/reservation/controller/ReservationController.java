@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ReservationController {
     private final ReservationService reservationService;
 
-    @PostMapping("/reservation/my")
+    @GetMapping("/reservation/my")
     public MyPageResDto myPage(@RequestBody MyPageReqDto myPageReqDto) {
         return reservationService.myPage(myPageReqDto);
     }
