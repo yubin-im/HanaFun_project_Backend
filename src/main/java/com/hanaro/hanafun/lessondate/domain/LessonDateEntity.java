@@ -1,5 +1,6 @@
 package com.hanaro.hanafun.lessondate.domain;
 
+import com.hanaro.hanafun.common.domain.BaseEntity;
 import com.hanaro.hanafun.lesson.domain.LessonEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -16,7 +17,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @DynamicInsert
-public class LessonDateEntity {
+public class LessonDateEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long lessondateId;
@@ -37,9 +38,4 @@ public class LessonDateEntity {
     @ColumnDefault("0")
     @Column(nullable = false)
     private int applicant;
-
-    @Column(nullable = false)
-    private LocalDateTime createdDate;
-
-    private LocalDateTime updatedDate;
 }

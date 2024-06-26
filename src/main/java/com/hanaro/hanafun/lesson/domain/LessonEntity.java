@@ -1,13 +1,12 @@
 package com.hanaro.hanafun.lesson.domain;
 
 import com.hanaro.hanafun.category.domain.CategoryEntity;
+import com.hanaro.hanafun.common.domain.BaseEntity;
 import com.hanaro.hanafun.host.domain.HostEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "lesson")
@@ -16,7 +15,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @DynamicInsert
-public class LessonEntity {
+public class LessonEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long lessonId;
@@ -56,9 +55,4 @@ public class LessonEntity {
     @ColumnDefault("0")
     @Column(nullable = false)
     private boolean isDeleted;
-
-    @Column(nullable = false)
-    private LocalDateTime createdDate;
-
-    private LocalDateTime updatedDate;
 }
