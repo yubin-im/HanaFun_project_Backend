@@ -7,6 +7,7 @@ import lombok.*;
 @Entity
 @Table(name="user")
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserEntity extends BaseEntity {
     @Id
@@ -15,7 +16,7 @@ public class UserEntity extends BaseEntity {
     private Long userId;
 
     @Column(name="username", nullable = false)
-    private String userName;
+    private String username;
 
     @Column(name="password", length = 20, nullable = false)
     private String password;

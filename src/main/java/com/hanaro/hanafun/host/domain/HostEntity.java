@@ -9,6 +9,8 @@ import lombok.*;
 @Entity
 @Table(name = "host")
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class HostEntity extends BaseEntity {
     @Id
