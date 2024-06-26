@@ -2,13 +2,14 @@ package com.hanaro.hanafun.transaction.domain;
 
 import com.hanaro.hanafun.account.domain.AccountEntity;
 import com.hanaro.hanafun.common.domain.BaseEntity;
+import com.hanaro.hanafun.reservation.domain.ReservationEntity;
 import com.hanaro.hanafun.transaction.enums.Type;
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
 @Table(name = "transaction")
-@Getter
+@Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TransactionEntity extends BaseEntity {
     @Id
@@ -24,8 +25,8 @@ public class TransactionEntity extends BaseEntity {
     @JoinColumn(name = "withdraw_id", nullable = false)
     private AccountEntity withdrawAccount;
 
-//    @Column(name = "reservation_id", nullable = false)
-//    private ReservationEntity reservationEntity;
+    @Column(name = "reservation_id", nullable = false)
+    private ReservationEntity reservationEntity;
 
     @Column(name = "payment", nullable = false)
     private Integer payment;
