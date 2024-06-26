@@ -2,7 +2,9 @@ package com.hanaro.hanafun.reservation.controller;
 
 import com.hanaro.hanafun.common.dto.ApiResponse;
 import com.hanaro.hanafun.reservation.dto.request.MyPageReqDto;
+import com.hanaro.hanafun.reservation.dto.request.MyScheduleReqDto;
 import com.hanaro.hanafun.reservation.dto.response.MyPageResDto;
+import com.hanaro.hanafun.reservation.dto.response.MyScheduleResDto;
 import com.hanaro.hanafun.reservation.dto.response.ReservationList;
 import com.hanaro.hanafun.reservation.service.ReservationService;
 import lombok.RequiredArgsConstructor;
@@ -26,5 +28,11 @@ public class ReservationController {
     @GetMapping("/my/lessons")
     public ApiResponse<List<ReservationList>> myLessons(@RequestBody MyPageReqDto myPageReqDto) {
         return reservationService.myLessons(myPageReqDto);
+    }
+
+    // 신청 클래스 일정 데이터 출력
+    @GetMapping("/my/schedule")
+    public ApiResponse<List<MyScheduleResDto>> mySchedules(@RequestBody MyScheduleReqDto myScheduleReqDto) {
+        return reservationService.mySchedules(myScheduleReqDto);
     }
 }

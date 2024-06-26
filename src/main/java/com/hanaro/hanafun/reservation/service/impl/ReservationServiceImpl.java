@@ -6,11 +6,14 @@ import com.hanaro.hanafun.lessondate.domain.LessonDateEntity;
 import com.hanaro.hanafun.reservation.domain.ReservationEntity;
 import com.hanaro.hanafun.reservation.domain.ReservationRepository;
 import com.hanaro.hanafun.reservation.dto.request.MyPageReqDto;
+import com.hanaro.hanafun.reservation.dto.request.MyScheduleReqDto;
 import com.hanaro.hanafun.reservation.dto.response.MyPageResDto;
+import com.hanaro.hanafun.reservation.dto.response.MyScheduleResDto;
 import com.hanaro.hanafun.reservation.dto.response.ReservationList;
 import com.hanaro.hanafun.reservation.service.ReservationService;
 import com.hanaro.hanafun.user.domain.UserEntity;
 import com.hanaro.hanafun.user.domain.UserRepository;
+import com.hanaro.hanafun.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +32,7 @@ public class ReservationServiceImpl implements ReservationService {
     @Transactional
     @Override
     public ApiResponse<MyPageResDto> myPage(MyPageReqDto myPageReqDto) {
-        UserEntity user = userRepository.findById(myPageReqDto.getUserId()).orElse(null);
+        UserEntity user = userRepository.findById(myPageReqDto.getUserId()).orElseThrow(() -> new UserNotFoundException());
         List<ReservationEntity> reservations = reservationRepository.findReservationEntitiesByUserEntity(user);
 
         LocalDate today = LocalDate.now();  // 오늘이후 날짜의 예약만 출력
@@ -71,7 +74,7 @@ public class ReservationServiceImpl implements ReservationService {
     @Transactional
     @Override
     public ApiResponse<List<ReservationList>> myLessons(MyPageReqDto myPageReqDto) {
-        UserEntity user = userRepository.findById(myPageReqDto.getUserId()).orElse(null);
+        UserEntity user = userRepository.findById(myPageReqDto.getUserId()).orElseThrow(() -> new UserNotFoundException());
         List<ReservationEntity> reservations = reservationRepository.findReservationEntitiesByUserEntity(user);
 
         List<ReservationList> lessons = reservations.stream()
@@ -96,6 +99,42 @@ public class ReservationServiceImpl implements ReservationService {
                 true,
                 "나의 신청 클래스 출력 완료",
                 lessons
+        );
+
+        return response;
+    }
+
+    // 신청 클래스 일정 데이터 출력
+    @Transactional
+    @Override
+    public ApiResponse<List<MyScheduleResDto>> mySchedules(MyScheduleReqDto myScheduleReqDto) {
+        UserEntity user = userRepository.findById(myScheduleReqDto.getUserId()).orElseThrow(() -> new UserNotFoundException());
+        List<ReservationEntity> reservations = reservationRepository.findReservationEntitiesByUserEntity(user);
+
+        List<MyScheduleResDto> mySchedules = reservations.stream()
+                .filter(reservation -> {
+                    LocalDate date = reservation.getLessonDateEntity().getDate();
+                    return date.getYear() == myScheduleReqDto.getYear() && date.getMonthValue() == myScheduleReqDto.getMonth();
+                })
+                .map(reservation -> {
+                    LessonDateEntity lessonDate = reservation.getLessonDateEntity();
+                    LessonEntity lessonEntity = lessonDate.getLessonEntity();
+
+                    MyScheduleResDto mySchedule = MyScheduleResDto.builder()
+                            .reservationId(reservation.getReservationId())
+                            .lessonId(lessonEntity.getLessonId())
+                            .date(lessonDate.getDate())
+                            .title(lessonEntity.getTitle())
+                            .build();
+
+                    return mySchedule;
+                })
+                .collect(Collectors.toList());
+
+        ApiResponse<List<MyScheduleResDto>> response = new ApiResponse<>(
+                true,
+                "나의 신청 클래스 출력 완료",
+                mySchedules
         );
 
         return response;
