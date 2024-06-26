@@ -10,8 +10,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class QrReqDto {
-    private long depositId;
+    private long guestId;
     private long withdrawId;
+    private long depositId;
+    private long lessonId;
     private long lessondateId;
     private int payment;
 }

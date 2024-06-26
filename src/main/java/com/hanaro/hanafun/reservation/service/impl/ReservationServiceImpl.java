@@ -157,7 +157,7 @@ public class ReservationServiceImpl implements ReservationService {
                 .map(reservation -> {
                     ReservationPerson person = ReservationPerson.builder()
                             .startTime(lessonDate.getStartTime())
-                            .userName(reservation.getUserEntity().getUserName())
+                            .userName(reservation.getUserEntity().getUsername())
                             .email(reservation.getUserEntity().getEmail())
                             .build();
                     return person;
