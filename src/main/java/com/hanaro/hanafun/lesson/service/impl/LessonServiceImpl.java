@@ -1,6 +1,5 @@
 package com.hanaro.hanafun.lesson.service.impl;
 
-import com.hanaro.hanafun.common.dto.ApiResponse;
 import com.hanaro.hanafun.host.domain.HostEntity;
 import com.hanaro.hanafun.host.domain.HostRepository;
 import com.hanaro.hanafun.lesson.domain.LessonEntity;
@@ -24,7 +23,7 @@ public class LessonServiceImpl implements LessonService {
     // 개설 클래스 관리- 개설 클래스 목록 출력
     @Transactional
     @Override
-    public ApiResponse<List<OpenedLessonsResDto>> openedLessons(OpenedLessonsReqDto openedLessonsReqDto) {
+    public List<OpenedLessonsResDto> openedLessons(OpenedLessonsReqDto openedLessonsReqDto) {
         HostEntity host = hostRepository.findHostEntityByUserEntity_UserId(openedLessonsReqDto.getUserId());
         List<LessonEntity> lessons = lessonRepository.findLessonEntitiesByHostEntity(host);
 
@@ -39,12 +38,6 @@ public class LessonServiceImpl implements LessonService {
                 })
                 .collect(Collectors.toList());
 
-        ApiResponse<List<OpenedLessonsResDto>> response = new ApiResponse<>(
-                true,
-                "개설 클래스 목록 출력 완료",
-                openedLessons
-        );
-
-        return response;
+        return openedLessons;
     }
 }

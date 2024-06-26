@@ -1,6 +1,5 @@
 package com.hanaro.hanafun.reservation.service.impl;
 
-import com.hanaro.hanafun.common.dto.ApiResponse;
 import com.hanaro.hanafun.lesson.domain.LessonEntity;
 import com.hanaro.hanafun.lessondate.domain.LessonDateEntity;
 import com.hanaro.hanafun.lessondate.domain.LessonDateRepository;
@@ -33,7 +32,7 @@ public class ReservationServiceImpl implements ReservationService {
     // 마이페이지 데이터 출력
     @Transactional
     @Override
-    public ApiResponse<MyPageResDto> myPage(MyPageReqDto myPageReqDto) {
+    public MyPageResDto myPage(MyPageReqDto myPageReqDto) {
         UserEntity user = userRepository.findById(myPageReqDto.getUserId()).orElseThrow(() -> new UserNotFoundException());
         List<ReservationEntity> reservations = reservationRepository.findReservationEntitiesByUserEntity(user);
 
@@ -63,19 +62,13 @@ public class ReservationServiceImpl implements ReservationService {
                 .lessons(lessons)
                 .build();
 
-        ApiResponse<MyPageResDto> response = new ApiResponse<>(
-                true,
-                "마이페이지 출력 완료",
-                myPageResDto
-        );
-
-        return response;
+        return myPageResDto;
     }
 
     // 나의 신청 클래스 데이터 출력
     @Transactional
     @Override
-    public ApiResponse<List<ReservationList>> myLessons(MyPageReqDto myPageReqDto) {
+    public List<ReservationList> myLessons(MyPageReqDto myPageReqDto) {
         UserEntity user = userRepository.findById(myPageReqDto.getUserId()).orElseThrow(() -> new UserNotFoundException());
         List<ReservationEntity> reservations = reservationRepository.findReservationEntitiesByUserEntity(user);
 
@@ -97,19 +90,13 @@ public class ReservationServiceImpl implements ReservationService {
                 })
                 .collect(Collectors.toList());
 
-        ApiResponse<List<ReservationList>> response = new ApiResponse<>(
-                true,
-                "나의 신청 클래스 출력 완료",
-                lessons
-        );
-
-        return response;
+        return lessons;
     }
 
     // 신청 클래스 일정 데이터 출력
     @Transactional
     @Override
-    public ApiResponse<List<MyScheduleResDto>> mySchedules(MyScheduleReqDto myScheduleReqDto) {
+    public List<MyScheduleResDto> mySchedules(MyScheduleReqDto myScheduleReqDto) {
         UserEntity user = userRepository.findById(myScheduleReqDto.getUserId()).orElseThrow(() -> new UserNotFoundException());
         List<ReservationEntity> reservations = reservationRepository.findReservationEntitiesByUserEntity(user);
 
@@ -133,19 +120,13 @@ public class ReservationServiceImpl implements ReservationService {
                 })
                 .collect(Collectors.toList());
 
-        ApiResponse<List<MyScheduleResDto>> response = new ApiResponse<>(
-                true,
-                "나의 신청 클래스 출력 완료",
-                mySchedules
-        );
-
-        return response;
+        return mySchedules;
     }
 
     // 개설 클래스 상세- 강좌날짜 별 예약자 정보 출력
     @Transactional
     @Override
-    public ApiResponse<LessonDateDetailResDto> lessonDateDetail(LessonDateDetailReqDto lessonDateDetailReqDto) {
+    public LessonDateDetailResDto lessonDateDetail(LessonDateDetailReqDto lessonDateDetailReqDto) {
         Long lessondateId = lessonDateDetailReqDto.getLessondateId();
         LessonDateEntity lessonDate = lessonDateRepository.findById(lessondateId).orElseThrow(() -> new LessonDateNotFoundException());
         List<ReservationEntity> reservations = reservationRepository.findReservationEntitiesByLessonDateEntity_LessondateId(lessondateId);
@@ -157,7 +138,7 @@ public class ReservationServiceImpl implements ReservationService {
                 .map(reservation -> {
                     ReservationPerson person = ReservationPerson.builder()
                             .startTime(lessonDate.getStartTime())
-                            .userName(reservation.getUserEntity().getUserName())
+                            .userName(reservation.getUserEntity().getUsername())
                             .email(reservation.getUserEntity().getEmail())
                             .build();
                     return person;
@@ -170,12 +151,6 @@ public class ReservationServiceImpl implements ReservationService {
                 .people(people)
                 .build();
 
-        ApiResponse<LessonDateDetailResDto> response = new ApiResponse<>(
-                true,
-                "예약자 정보 출력 완료",
-                lessonDateDetailResDto
-        );
-
-        return response;
+        return lessonDateDetailResDto;
     }
 }

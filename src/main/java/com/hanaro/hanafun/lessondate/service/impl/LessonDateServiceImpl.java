@@ -1,6 +1,5 @@
 package com.hanaro.hanafun.lessondate.service.impl;
 
-import com.hanaro.hanafun.common.dto.ApiResponse;
 import com.hanaro.hanafun.lessondate.domain.LessonDateEntity;
 import com.hanaro.hanafun.lessondate.domain.LessonDateRepository;
 import com.hanaro.hanafun.lessondate.dto.response.LessonDetailResDto;
@@ -21,7 +20,7 @@ public class LessonDateServiceImpl implements LessonDateService {
     // 개설 클래스 상세
     @Transactional
     @Override
-    public ApiResponse<List<LessonDetailResDto>> lessonDetail(Long lessonId) {
+    public List<LessonDetailResDto> lessonDetail(Long lessonId) {
         List<LessonDateEntity> lessonDates = lessonDateRepository.findLessonDateEntitiesByLessonEntity_LessonId(lessonId);
 
         List<LessonDetailResDto> lessonDetails = lessonDates.stream()
@@ -34,12 +33,6 @@ public class LessonDateServiceImpl implements LessonDateService {
                 })
                 .collect(Collectors.toList());
 
-        ApiResponse<List<LessonDetailResDto>> response = new ApiResponse<>(
-                true,
-                "개설 클래스 상세 출력 완료",
-                lessonDetails
-        );
-
-        return response;
+        return lessonDetails;
     }
 }
