@@ -55,4 +55,9 @@ public class LessonEntity extends BaseEntity {
     @ColumnDefault("0")
     @Column(nullable = false)
     private boolean isDeleted;
+
+    // 강좌신청 누적인원 업데이트
+    public void updateApplicantSum(int applicantSum) {
+        this.applicantSum = applicantSum;
+    }
 }
