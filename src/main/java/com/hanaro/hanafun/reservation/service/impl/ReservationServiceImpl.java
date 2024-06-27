@@ -4,6 +4,7 @@ import com.hanaro.hanafun.account.domain.AccountEntity;
 import com.hanaro.hanafun.account.domain.AccountRepository;
 import com.hanaro.hanafun.account.exception.AccountNotFoundException;
 import com.hanaro.hanafun.lesson.domain.LessonEntity;
+import com.hanaro.hanafun.lesson.domain.LessonRepository;
 import com.hanaro.hanafun.lessondate.domain.LessonDateEntity;
 import com.hanaro.hanafun.lessondate.domain.LessonDateRepository;
 import com.hanaro.hanafun.lessondate.exception.LessonDateNotFoundException;
@@ -32,6 +33,7 @@ public class ReservationServiceImpl implements ReservationService {
     private final UserRepository userRepository;
     private final LessonDateRepository lessonDateRepository;
     private final AccountRepository accountRepository;
+    private final LessonRepository lessonRepository;
 
     // 마이페이지 데이터 출력
     @Transactional
@@ -203,6 +205,10 @@ public class ReservationServiceImpl implements ReservationService {
         lessonDate.updateApplicant(lessonDate.getApplicant() + bookLessonReqDto.getApplicant());
         lessonDateRepository.save(lessonDate);
 
+        // 강좌 신청 누적인원 증가
+        lesson.updateApplicantSum(lesson.getApplicantSum() + bookLessonReqDto.getApplicant());
+        lessonRepository.save(lesson);
+
         return BookLessonResDto.builder()
                 .message("예약완료")
                 .build();
@@ -222,5 +228,10 @@ public class ReservationServiceImpl implements ReservationService {
         LessonDateEntity lessonDate = reservation.getLessonDateEntity();
         lessonDate.updateApplicant(lessonDate.getApplicant() - reservation.getApplicant());
         lessonDateRepository.save(lessonDate);
+
+        // 강좌 신청 누적인원 제거
+        LessonEntity lesson = lessonDate.getLessonEntity();
+        lesson.updateApplicantSum(lesson.getApplicantSum() - reservation.getApplicant());
+        lessonRepository.save(lesson);
     }
 }
