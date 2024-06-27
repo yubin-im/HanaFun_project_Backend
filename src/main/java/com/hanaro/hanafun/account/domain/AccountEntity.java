@@ -7,7 +7,7 @@ import lombok.*;
 
 @Entity
 @Table(name = "account")
-@Getter
+@Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AccountEntity extends BaseEntity {
     @Id

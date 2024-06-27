@@ -10,6 +10,8 @@ import lombok.*;
 @Entity
 @Table(name = "transaction")
 @Data
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TransactionEntity extends BaseEntity {
     @Id
