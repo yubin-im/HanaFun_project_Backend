@@ -10,6 +10,7 @@ import lombok.*;
 @Entity
 @Table(name = "transaction")
 @Data
+@EqualsAndHashCode(callSuper = false)
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
