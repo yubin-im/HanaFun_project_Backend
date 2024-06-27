@@ -1,9 +1,6 @@
 package com.hanaro.hanafun.reservation.service;
 
-import com.hanaro.hanafun.reservation.dto.request.BookLessonReqDto;
-import com.hanaro.hanafun.reservation.dto.request.MyPageReqDto;
-import com.hanaro.hanafun.reservation.dto.request.MyScheduleReqDto;
-import com.hanaro.hanafun.reservation.dto.request.LessonDateDetailReqDto;
+import com.hanaro.hanafun.reservation.dto.request.*;
 import com.hanaro.hanafun.reservation.dto.response.*;
 
 import java.util.List;
@@ -21,6 +18,9 @@ public interface ReservationService {
     // 개설 클래스 상세- 강좌날짜 별 예약자 정보 출력
     LessonDateDetailResDto lessonDateDetail(LessonDateDetailReqDto lessonDateDetailReqDto);
 
-    // 클래스 예약하기
+    // 클래스 예약하기 (결제 제외)
     BookLessonResDto bookLesson(BookLessonReqDto bookLessonReqDto);
+
+    // 클래스 취소하기 (환불 제외)
+    void cancelLesson(CancelLessonReqDto cancelLessonReqDto);
 }

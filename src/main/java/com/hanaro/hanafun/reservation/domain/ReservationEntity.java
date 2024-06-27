@@ -37,4 +37,9 @@ public class ReservationEntity extends BaseEntity {
     @ColumnDefault("0")
     @Column(nullable = false)
     private boolean isDeleted;
+
+    // 삭제 업데이트
+    public void updateIsDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
 }
