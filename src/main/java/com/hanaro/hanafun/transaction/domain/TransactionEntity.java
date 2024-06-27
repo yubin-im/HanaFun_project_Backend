@@ -10,6 +10,8 @@ import lombok.*;
 @Entity
 @Table(name = "transaction")
 @Data
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TransactionEntity extends BaseEntity {
     @Id
@@ -25,7 +27,8 @@ public class TransactionEntity extends BaseEntity {
     @JoinColumn(name = "withdraw_id", nullable = false)
     private AccountEntity withdrawAccount;
 
-    @Column(name = "reservation_id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "reservation_id", nullable = false)
     private ReservationEntity reservationEntity;
 
     @Column(name = "payment", nullable = false)

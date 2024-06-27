@@ -7,13 +7,9 @@ import java.time.LocalDate;
 
 @Getter
 @Builder
-public class ReservationList {
+public class MyScheduleResDto {
     private Long reservationId;
-    private Long lessondateId;
     private Long lessonId;
-    private String image;
-    private String title;
-    private String location;
     private LocalDate date;
-    private String categoryName;
+    private String title;
 }

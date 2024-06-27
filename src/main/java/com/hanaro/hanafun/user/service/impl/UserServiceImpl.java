@@ -20,7 +20,7 @@ public class UserServiceImpl implements UserService {
     private final JwtUtil jwtUtil;
 
     @Override
-    public LoginResDto login(LoginReqDto loginReqDto) throws UserNotFoundException{
+    public LoginResDto login(LoginReqDto loginReqDto){
         UserEntity userEntity = userRepository.findByPassword(loginReqDto.getPassword())
                 .orElseThrow(() -> new UserNotFoundException());
         String generatedJwt = jwtUtil.createToken(userEntity.getUsername(), userEntity.getUserId());
@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public PointResDto readPoint(Long userId) throws UserNotFoundException{
+    public PointResDto readPoint(Long userId){
         UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException());
 
@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public IsHostResDto readIsHost(Long userId) throws UserNotFoundException{
+    public IsHostResDto readIsHost(Long userId){
         UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException());
 

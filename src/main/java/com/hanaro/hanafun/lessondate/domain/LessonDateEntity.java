@@ -38,4 +38,9 @@ public class LessonDateEntity extends BaseEntity {
     @ColumnDefault("0")
     @Column(nullable = false)
     private int applicant;
+
+    // 신청인원 업데이트
+    public void updateApplicant(int applicant) {
+        this.applicant = applicant;
+    }
 }
