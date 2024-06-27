@@ -1,11 +1,15 @@
 package com.hanaro.hanafun.reservation.service.impl;
 
+import com.hanaro.hanafun.account.domain.AccountEntity;
+import com.hanaro.hanafun.account.domain.AccountRepository;
+import com.hanaro.hanafun.account.exception.AccountNotFoundException;
 import com.hanaro.hanafun.lesson.domain.LessonEntity;
 import com.hanaro.hanafun.lessondate.domain.LessonDateEntity;
 import com.hanaro.hanafun.lessondate.domain.LessonDateRepository;
 import com.hanaro.hanafun.lessondate.exception.LessonDateNotFoundException;
 import com.hanaro.hanafun.reservation.domain.ReservationEntity;
 import com.hanaro.hanafun.reservation.domain.ReservationRepository;
+import com.hanaro.hanafun.reservation.dto.request.BookLessonReqDto;
 import com.hanaro.hanafun.reservation.dto.request.LessonDateDetailReqDto;
 import com.hanaro.hanafun.reservation.dto.request.MyPageReqDto;
 import com.hanaro.hanafun.reservation.dto.request.MyScheduleReqDto;
@@ -20,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,6 +33,7 @@ public class ReservationServiceImpl implements ReservationService {
     private final ReservationRepository reservationRepository;
     private final UserRepository userRepository;
     private final LessonDateRepository lessonDateRepository;
+    private final AccountRepository accountRepository;
 
     // 마이페이지 데이터 출력
     @Transactional
@@ -152,5 +158,45 @@ public class ReservationServiceImpl implements ReservationService {
                 .build();
 
         return lessonDateDetailResDto;
+    }
+
+    // 클래스 예약하기
+    @Transactional
+    @Override
+    public String bookLesson(BookLessonReqDto bookLessonReqDto) {
+        // 계좌 비밀번호 확인
+        AccountEntity account = accountRepository.findById(bookLessonReqDto.getAccountId()).orElseThrow(() -> new AccountNotFoundException());
+        if (!account.getPassword().equals(bookLessonReqDto.getPassword())) {
+            return "계좌 비밀번호가 맞지 않습니다.";
+        }
+
+        // 모집인원 초과 확인
+        LessonDateEntity lessonDate = lessonDateRepository.findLessonDateEntityByLessondateId(bookLessonReqDto.getLessondateId()).orElseThrow(() -> new LessonDateNotFoundException());
+        LessonEntity lesson = lessonDate.getLessonEntity();
+        if(lesson.getCapacity() < lessonDate.getApplicant() + bookLessonReqDto.getApplicant()) {
+            return "모집인원이 초과되었습니다.";
+        }
+
+        // 해당 날짜에 예약 이미 있는지 확인
+        Optional<ReservationEntity> existingReservation = reservationRepository.findReservationEntityByUserEntity_UserIdAndLessonDateEntity_LessondateId(
+                bookLessonReqDto.getUserId(), bookLessonReqDto.getLessondateId());
+        if (existingReservation.isPresent()) {
+            return "이미 예약이 존재합니다.";
+        }
+
+        // 예약 추가
+        UserEntity user = userRepository.findUserEntityByUserId(bookLessonReqDto.getUserId()).orElseThrow(() -> new UserNotFoundException());
+        ReservationEntity reservation = ReservationEntity.builder()
+                .userEntity(user)
+                .lessonDateEntity(lessonDate)
+                .applicant(bookLessonReqDto.getApplicant())
+                .build();
+        reservationRepository.save(reservation);
+
+        // 강좌 신청인원 증가
+        lessonDate.updateApplicant(lessonDate.getApplicant() + bookLessonReqDto.getApplicant());
+        lessonDateRepository.save(lessonDate);
+
+        return "예약완료";
     }
 }

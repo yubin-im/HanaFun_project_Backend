@@ -1,6 +1,7 @@
 package com.hanaro.hanafun.reservation.controller;
 
 import com.hanaro.hanafun.common.dto.ApiResponse;
+import com.hanaro.hanafun.reservation.dto.request.BookLessonReqDto;
 import com.hanaro.hanafun.reservation.dto.request.LessonDateDetailReqDto;
 import com.hanaro.hanafun.reservation.dto.request.MyPageReqDto;
 import com.hanaro.hanafun.reservation.dto.request.MyScheduleReqDto;
@@ -47,5 +48,11 @@ public class ReservationController {
     public ResponseEntity<ApiResponse> lessonDateDetail(@RequestBody LessonDateDetailReqDto lessonDateDetailReqDto) {
         LessonDateDetailResDto lessonDateDetailResDto = reservationService.lessonDateDetail(lessonDateDetailReqDto);
         return ResponseEntity.ok(new ApiResponse<>(true, "ok", lessonDateDetailResDto));
+    }
+
+    // 클래스 예약하기
+    @PostMapping("/check")
+    public String bookLesson(@RequestBody BookLessonReqDto bookLessonReqDto) {
+        return reservationService.bookLesson(bookLessonReqDto);
     }
 }
