@@ -10,4 +10,5 @@ import java.time.LocalDate;
 public class LessonDetailResDto {
     private Long lessondateId;
     private LocalDate date;
+    private Long lessonId;
 }

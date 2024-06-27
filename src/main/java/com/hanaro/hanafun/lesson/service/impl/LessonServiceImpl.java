@@ -5,7 +5,9 @@ import com.hanaro.hanafun.host.domain.HostRepository;
 import com.hanaro.hanafun.lesson.domain.LessonEntity;
 import com.hanaro.hanafun.lesson.domain.LessonRepository;
 import com.hanaro.hanafun.lesson.dto.request.OpenedLessonsReqDto;
+import com.hanaro.hanafun.lesson.dto.response.LessonInfoResDto;
 import com.hanaro.hanafun.lesson.dto.response.OpenedLessonsResDto;
+import com.hanaro.hanafun.lesson.exception.LessonNotFoundException;
 import com.hanaro.hanafun.lesson.service.LessonService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -39,5 +41,26 @@ public class LessonServiceImpl implements LessonService {
                 .collect(Collectors.toList());
 
         return openedLessons;
+    }
+
+    // 클래스 상세보기
+    @Transactional
+    @Override
+    public LessonInfoResDto lessonInfo(Long lessonId) {
+        LessonEntity lesson = lessonRepository.findById(lessonId).orElseThrow(() -> new LessonNotFoundException());
+
+        LessonInfoResDto lessonInfoResDto = LessonInfoResDto.builder()
+                .lessonId(lessonId)
+                .image(lesson.getImage())
+                .title(lesson.getTitle())
+                .price(lesson.getPrice())
+                .description(lesson.getDescription())
+                .location(lesson.getLocation())
+                .materials(lesson.getMaterials())
+                .capacity(lesson.getCapacity())
+                .categoryName(lesson.getCategoryEntity().getCategoryName())
+                .build();
+
+        return lessonInfoResDto;
     }
 }
