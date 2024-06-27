@@ -163,25 +163,31 @@ public class ReservationServiceImpl implements ReservationService {
     // 클래스 예약하기
     @Transactional
     @Override
-    public String bookLesson(BookLessonReqDto bookLessonReqDto) {
+    public BookLessonResDto bookLesson(BookLessonReqDto bookLessonReqDto) {
         // 계좌 비밀번호 확인
         AccountEntity account = accountRepository.findById(bookLessonReqDto.getAccountId()).orElseThrow(() -> new AccountNotFoundException());
         if (!account.getPassword().equals(bookLessonReqDto.getPassword())) {
-            return "계좌 비밀번호가 맞지 않습니다.";
+            return BookLessonResDto.builder()
+                    .message("계좌 비밀번호가 맞지 않습니다.")
+                    .build();
         }
 
         // 모집인원 초과 확인
         LessonDateEntity lessonDate = lessonDateRepository.findLessonDateEntityByLessondateId(bookLessonReqDto.getLessondateId()).orElseThrow(() -> new LessonDateNotFoundException());
         LessonEntity lesson = lessonDate.getLessonEntity();
         if(lesson.getCapacity() < lessonDate.getApplicant() + bookLessonReqDto.getApplicant()) {
-            return "모집인원이 초과되었습니다.";
+            return BookLessonResDto.builder()
+                    .message("모집인원이 초과되었습니다.")
+                    .build();
         }
 
         // 해당 날짜에 예약 이미 있는지 확인
         Optional<ReservationEntity> existingReservation = reservationRepository.findReservationEntityByUserEntity_UserIdAndLessonDateEntity_LessondateId(
                 bookLessonReqDto.getUserId(), bookLessonReqDto.getLessondateId());
         if (existingReservation.isPresent()) {
-            return "이미 예약이 존재합니다.";
+            return BookLessonResDto.builder()
+                    .message("이미 예약이 존재합니다.")
+                    .build();
         }
 
         // 예약 추가
@@ -197,6 +203,8 @@ public class ReservationServiceImpl implements ReservationService {
         lessonDate.updateApplicant(lessonDate.getApplicant() + bookLessonReqDto.getApplicant());
         lessonDateRepository.save(lessonDate);
 
-        return "예약완료";
+        return BookLessonResDto.builder()
+                .message("예약완료")
+                .build();
     }
 }

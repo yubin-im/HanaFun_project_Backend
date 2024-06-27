@@ -4,10 +4,7 @@ import com.hanaro.hanafun.reservation.dto.request.BookLessonReqDto;
 import com.hanaro.hanafun.reservation.dto.request.MyPageReqDto;
 import com.hanaro.hanafun.reservation.dto.request.MyScheduleReqDto;
 import com.hanaro.hanafun.reservation.dto.request.LessonDateDetailReqDto;
-import com.hanaro.hanafun.reservation.dto.response.MyPageResDto;
-import com.hanaro.hanafun.reservation.dto.response.MyScheduleResDto;
-import com.hanaro.hanafun.reservation.dto.response.ReservationList;
-import com.hanaro.hanafun.reservation.dto.response.LessonDateDetailResDto;
+import com.hanaro.hanafun.reservation.dto.response.*;
 
 import java.util.List;
 
@@ -25,5 +22,5 @@ public interface ReservationService {
     LessonDateDetailResDto lessonDateDetail(LessonDateDetailReqDto lessonDateDetailReqDto);
 
     // 클래스 예약하기
-    String bookLesson(BookLessonReqDto bookLessonReqDto);
+    BookLessonResDto bookLesson(BookLessonReqDto bookLessonReqDto);
 }

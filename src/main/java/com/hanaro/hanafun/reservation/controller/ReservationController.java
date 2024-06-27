@@ -5,10 +5,7 @@ import com.hanaro.hanafun.reservation.dto.request.BookLessonReqDto;
 import com.hanaro.hanafun.reservation.dto.request.LessonDateDetailReqDto;
 import com.hanaro.hanafun.reservation.dto.request.MyPageReqDto;
 import com.hanaro.hanafun.reservation.dto.request.MyScheduleReqDto;
-import com.hanaro.hanafun.reservation.dto.response.LessonDateDetailResDto;
-import com.hanaro.hanafun.reservation.dto.response.MyPageResDto;
-import com.hanaro.hanafun.reservation.dto.response.MyScheduleResDto;
-import com.hanaro.hanafun.reservation.dto.response.ReservationList;
+import com.hanaro.hanafun.reservation.dto.response.*;
 import com.hanaro.hanafun.reservation.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -52,7 +49,8 @@ public class ReservationController {
 
     // 클래스 예약하기
     @PostMapping("/check")
-    public String bookLesson(@RequestBody BookLessonReqDto bookLessonReqDto) {
-        return reservationService.bookLesson(bookLessonReqDto);
+    public ResponseEntity<ApiResponse> bookLesson(@RequestBody BookLessonReqDto bookLessonReqDto) {
+        BookLessonResDto bookLessonResDto = reservationService.bookLesson(bookLessonReqDto);
+        return ResponseEntity.ok(new ApiResponse<>(true, "ok", bookLessonResDto));
     }
 }
