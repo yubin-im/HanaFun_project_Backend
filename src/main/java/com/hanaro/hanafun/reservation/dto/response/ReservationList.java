@@ -15,4 +15,5 @@ public class ReservationList {
     private String title;
     private String location;
     private LocalDate date;
+    private String categoryName;
 }

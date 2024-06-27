@@ -1,13 +1,8 @@
 package com.hanaro.hanafun.reservation.controller;
 
 import com.hanaro.hanafun.common.dto.ApiResponse;
-import com.hanaro.hanafun.reservation.dto.request.LessonDateDetailReqDto;
-import com.hanaro.hanafun.reservation.dto.request.MyPageReqDto;
-import com.hanaro.hanafun.reservation.dto.request.MyScheduleReqDto;
-import com.hanaro.hanafun.reservation.dto.response.LessonDateDetailResDto;
-import com.hanaro.hanafun.reservation.dto.response.MyPageResDto;
-import com.hanaro.hanafun.reservation.dto.response.MyScheduleResDto;
-import com.hanaro.hanafun.reservation.dto.response.ReservationList;
+import com.hanaro.hanafun.reservation.dto.request.*;
+import com.hanaro.hanafun.reservation.dto.response.*;
 import com.hanaro.hanafun.reservation.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -47,5 +42,18 @@ public class ReservationController {
     public ResponseEntity<ApiResponse> lessonDateDetail(@RequestBody LessonDateDetailReqDto lessonDateDetailReqDto) {
         LessonDateDetailResDto lessonDateDetailResDto = reservationService.lessonDateDetail(lessonDateDetailReqDto);
         return ResponseEntity.ok(new ApiResponse<>(true, "ok", lessonDateDetailResDto));
+    }
+
+    // 클래스 예약하기 (결제 제외)
+    @PostMapping("/check")
+    public ResponseEntity<ApiResponse> bookLesson(@RequestBody BookLessonReqDto bookLessonReqDto) {
+        BookLessonResDto bookLessonResDto = reservationService.bookLesson(bookLessonReqDto);
+        return ResponseEntity.ok(new ApiResponse<>(true, "ok", bookLessonResDto));
+    }
+
+    // 클래스 취소하기 (환불 제외)
+    @PostMapping("/cancel")
+    public void cancelLesson(@RequestBody CancelLessonReqDto cancelLessonReqDto) {
+        reservationService.cancelLesson(cancelLessonReqDto);
     }
 }
