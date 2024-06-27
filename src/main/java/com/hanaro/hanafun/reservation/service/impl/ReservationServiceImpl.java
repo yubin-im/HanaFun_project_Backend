@@ -58,6 +58,7 @@ public class ReservationServiceImpl implements ReservationService {
                             .title(lessonEntity.getTitle())
                             .location(lessonEntity.getLocation())
                             .date(lessonDate.getDate())
+                            .categoryName(lessonEntity.getCategoryEntity().getCategoryName())
                             .build();
                     return lesson;
                 })
@@ -91,6 +92,7 @@ public class ReservationServiceImpl implements ReservationService {
                             .title(lessonEntity.getTitle())
                             .location(lessonEntity.getLocation())
                             .date(lessonDate.getDate())
+                            .categoryName(lessonEntity.getCategoryEntity().getCategoryName())
                             .build();
                     return lesson;
                 })
