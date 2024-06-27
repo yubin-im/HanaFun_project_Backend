@@ -10,6 +10,5 @@ import java.util.Optional;
 @Repository
 public interface LessonRepository extends JpaRepository<LessonEntity, Long> {
     List<LessonEntity> findLessonEntitiesByHostEntity(HostEntity hostEntity);
-
     Optional<List<LessonEntity>> findByHostEntityHostId(Long hostId);
 }
