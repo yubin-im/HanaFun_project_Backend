@@ -9,6 +9,7 @@ import org.hibernate.annotations.ColumnDefault;
 @Entity
 @Table(name = "revenue")
 @Data
+@EqualsAndHashCode(callSuper = false)
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
