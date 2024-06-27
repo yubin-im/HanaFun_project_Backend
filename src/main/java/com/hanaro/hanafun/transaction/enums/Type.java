@@ -8,7 +8,8 @@ import lombok.Getter;
 public enum Type {
     QR("QR"),
     PENDING("PENDING"),
-    COMPLETE("COMPLETE");
+    COMPLETED("COMPLETED"),
+    CANCELED("CANCELED");
 
     private String value;
 }

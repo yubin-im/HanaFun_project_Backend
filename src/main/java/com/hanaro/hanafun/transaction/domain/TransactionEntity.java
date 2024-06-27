@@ -17,7 +17,7 @@ public class TransactionEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "transaction_id")
-    private Long TransactionId;
+    private Long transactionId;
 
     @ManyToOne
     @JoinColumn(name = "deposit_id", nullable = false)
