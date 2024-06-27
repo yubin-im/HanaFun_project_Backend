@@ -2,6 +2,7 @@ package com.hanaro.hanafun.lesson.controller;
 
 import com.hanaro.hanafun.common.dto.ApiResponse;
 import com.hanaro.hanafun.lesson.dto.request.OpenedLessonsReqDto;
+import com.hanaro.hanafun.lesson.dto.response.LessonInfoResDto;
 import com.hanaro.hanafun.lesson.dto.response.OpenedLessonsResDto;
 import com.hanaro.hanafun.lesson.service.LessonService;
 import com.hanaro.hanafun.lessondate.dto.response.LessonDetailResDto;
@@ -30,8 +31,15 @@ public class LessonController {
 
     // 개설 클래스 상세
     @GetMapping("/reservation/my/opened/{lessonId}")
-    public ResponseEntity<ApiResponse>  lessonDetail(@PathVariable Long lessonId) {
+    public ResponseEntity<ApiResponse> lessonDetail(@PathVariable Long lessonId) {
         List<LessonDetailResDto> lessonDetails = lessonDateService.lessonDetail(lessonId);
         return ResponseEntity.ok(new ApiResponse<>(true, "ok", lessonDetails));
+    }
+
+    // 클래스 상세보기
+    @GetMapping("/lesson/{lessonId}")
+    public ResponseEntity<ApiResponse> lessonInfo(@PathVariable Long lessonId) {
+        LessonInfoResDto lessonInfoResDto = lessonService.lessonInfo(lessonId);
+        return ResponseEntity.ok(new ApiResponse<>(true, "ok", lessonInfoResDto));
     }
 }
