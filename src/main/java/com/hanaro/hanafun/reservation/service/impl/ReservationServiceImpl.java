@@ -9,11 +9,9 @@ import com.hanaro.hanafun.lessondate.domain.LessonDateRepository;
 import com.hanaro.hanafun.lessondate.exception.LessonDateNotFoundException;
 import com.hanaro.hanafun.reservation.domain.ReservationEntity;
 import com.hanaro.hanafun.reservation.domain.ReservationRepository;
-import com.hanaro.hanafun.reservation.dto.request.BookLessonReqDto;
-import com.hanaro.hanafun.reservation.dto.request.LessonDateDetailReqDto;
-import com.hanaro.hanafun.reservation.dto.request.MyPageReqDto;
-import com.hanaro.hanafun.reservation.dto.request.MyScheduleReqDto;
+import com.hanaro.hanafun.reservation.dto.request.*;
 import com.hanaro.hanafun.reservation.dto.response.*;
+import com.hanaro.hanafun.reservation.exception.ReservationNotFounException;
 import com.hanaro.hanafun.reservation.service.ReservationService;
 import com.hanaro.hanafun.user.domain.UserEntity;
 import com.hanaro.hanafun.user.domain.UserRepository;
@@ -162,7 +160,7 @@ public class ReservationServiceImpl implements ReservationService {
         return lessonDateDetailResDto;
     }
 
-    // 클래스 예약하기
+    // 클래스 예약하기 (결제 제외)
     @Transactional
     @Override
     public BookLessonResDto bookLesson(BookLessonReqDto bookLessonReqDto) {
@@ -208,5 +206,21 @@ public class ReservationServiceImpl implements ReservationService {
         return BookLessonResDto.builder()
                 .message("예약완료")
                 .build();
+    }
+
+    // 클래스 취소하기 (환불 제외)
+    @Transactional
+    @Override
+    public void cancelLesson(CancelLessonReqDto cancelLessonReqDto) {
+        ReservationEntity reservation = reservationRepository.findById(cancelLessonReqDto.getReservationId()).orElseThrow(() -> new ReservationNotFounException());
+
+        // 클래스 취소 (논리적 삭제)
+        reservation.updateIsDeleted(true);
+        reservationRepository.save(reservation);
+
+        // 신청 인원 제거
+        LessonDateEntity lessonDate = reservation.getLessonDateEntity();
+        lessonDate.updateApplicant(lessonDate.getApplicant() - reservation.getApplicant());
+        lessonDateRepository.save(lessonDate);
     }
 }
