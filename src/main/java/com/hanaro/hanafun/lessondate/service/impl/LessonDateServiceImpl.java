@@ -28,6 +28,7 @@ public class LessonDateServiceImpl implements LessonDateService {
                     LessonDetailResDto lessonDetail = LessonDetailResDto.builder()
                             .lessondateId(lessonDate.getLessondateId())
                             .date(lessonDate.getDate())
+                            .lessonId(lessonId)
                             .build();
                     return lessonDetail;
                 })
