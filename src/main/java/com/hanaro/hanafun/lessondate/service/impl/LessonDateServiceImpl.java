@@ -33,6 +33,7 @@ public class LessonDateServiceImpl implements LessonDateService {
                             .lessondateId(lessonDate.getLessondateId())
                             .date(lessonDate.getDate())
                             .lessonId(lessonId)
+                            .title(lessonDate.getLessonEntity().getTitle())
                             .build();
                     return lessonDetail;
                 })

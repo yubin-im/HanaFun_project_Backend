@@ -1,6 +1,7 @@
 package com.hanaro.hanafun.lesson.controller;
 
 import com.hanaro.hanafun.common.dto.ApiResponse;
+import com.hanaro.hanafun.lesson.dto.request.CreateLessonReqDto;
 import com.hanaro.hanafun.lesson.dto.request.OpenedLessonsReqDto;
 import com.hanaro.hanafun.lesson.dto.response.LessonInfoResDto;
 import com.hanaro.hanafun.lesson.dto.response.OpenedLessonsResDto;
@@ -53,5 +54,11 @@ public class LessonController {
         } catch (IOException e) {
             return ResponseEntity.status(500).body("파일 업로드 중 오류가 발생했습니다.");
         }
+    }
+
+    // 클래스 등록하기
+    @PostMapping("/lesson/create")
+    public void createLesson(@RequestBody CreateLessonReqDto createLessonReqDto) {
+        lessonService.createLesson(createLessonReqDto);
     }
 }
