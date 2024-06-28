@@ -64,9 +64,44 @@ public class LessonController {
     }
 
     // 클래스 전체 조회 (클래스 탐색)
-    @GetMapping("/category/all")
+    @GetMapping("/category/search/all")
     public ResponseEntity<ApiResponse> fullLesson() {
         List<FullLessonResDto> fullLessonResDtos = lessonService.fullLesson();
         return ResponseEntity.ok(new ApiResponse<>(true, "ok", fullLessonResDtos));
+    }
+
+    // 카테고리 별 클래스 조회
+    @GetMapping("/category/search/{categoryId}")
+    public ResponseEntity<ApiResponse> categoryLesson(@PathVariable Long categoryId) {
+        List<FullLessonResDto> fullLessonResDtos = lessonService.categoryLesson(categoryId);
+        return ResponseEntity.ok(new ApiResponse<>(true, "ok", fullLessonResDtos));
+    }
+
+    // 클래스 검색(전체)
+    @GetMapping("/category/all/search")
+    public ResponseEntity<ApiResponse> searchLessonAll(@RequestParam("query") String query){
+        List<FullLessonResDto> fullLessonResDtos = lessonService.searchLessonAll(query);
+        return ResponseEntity.ok(new ApiResponse<>(true, "ok", fullLessonResDtos));
+    }
+
+    // 클래스 검색(카테고리)
+    @GetMapping("/category/{categoryId}/search")
+    public ResponseEntity<ApiResponse> searchLessonCategory(@PathVariable Long categoryId, @RequestParam("query") String query){
+        List<FullLessonResDto> fullLessonResDtos = lessonService.searchLessonCategory(categoryId, query);
+        return ResponseEntity.ok(new ApiResponse<>(true, "ok", fullLessonResDtos));
+    }
+
+    // 클래스 필터(전체)
+    @GetMapping("/category/all")
+    public ResponseEntity<ApiResponse> searchFilterLessonAll(@RequestParam("query") String query, @RequestParam("sort") String sort){
+        List<FullLessonResDto> fullLessonResDtos = lessonService.searchFilterLessonAll(query, sort);
+        return ResponseEntity.ok(new ApiResponse(true, "ok", fullLessonResDtos));
+    }
+
+    // 클래스 필터(카테고리)
+    @GetMapping("/category/{categoryId}")
+    public ResponseEntity<ApiResponse> searchFilterLessonCategory(@PathVariable Long categoryId, @RequestParam("query") String query, @RequestParam("sort") String sort){
+        List<FullLessonResDto> fullLessonResDtos = lessonService.searchFilterLessonCategory(categoryId, query, sort);
+        return ResponseEntity.ok(new ApiResponse(true, "ok", fullLessonResDtos));
     }
 }
