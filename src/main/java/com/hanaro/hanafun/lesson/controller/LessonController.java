@@ -3,6 +3,7 @@ package com.hanaro.hanafun.lesson.controller;
 import com.hanaro.hanafun.common.dto.ApiResponse;
 import com.hanaro.hanafun.lesson.dto.request.CreateLessonReqDto;
 import com.hanaro.hanafun.lesson.dto.request.OpenedLessonsReqDto;
+import com.hanaro.hanafun.lesson.dto.response.FullLessonResDto;
 import com.hanaro.hanafun.lesson.dto.response.LessonInfoResDto;
 import com.hanaro.hanafun.lesson.dto.response.OpenedLessonsResDto;
 import com.hanaro.hanafun.lesson.service.LessonService;
@@ -60,5 +61,12 @@ public class LessonController {
     @PostMapping("/lesson/create")
     public void createLesson(@RequestBody CreateLessonReqDto createLessonReqDto) {
         lessonService.createLesson(createLessonReqDto);
+    }
+
+    // 클래스 전체 조회 (클래스 탐색)
+    @GetMapping("/category/all")
+    public ResponseEntity<ApiResponse> fullLesson() {
+        List<FullLessonResDto> fullLessonResDtos = lessonService.fullLesson();
+        return ResponseEntity.ok(new ApiResponse<>(true, "ok", fullLessonResDtos));
     }
 }

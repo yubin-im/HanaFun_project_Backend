@@ -10,6 +10,7 @@ import com.hanaro.hanafun.lesson.domain.LessonRepository;
 import com.hanaro.hanafun.lesson.dto.request.CreateLessonDateReqDto;
 import com.hanaro.hanafun.lesson.dto.request.CreateLessonReqDto;
 import com.hanaro.hanafun.lesson.dto.request.OpenedLessonsReqDto;
+import com.hanaro.hanafun.lesson.dto.response.FullLessonResDto;
 import com.hanaro.hanafun.lesson.dto.response.LessonInfoResDto;
 import com.hanaro.hanafun.lesson.dto.response.OpenedLessonsResDto;
 import com.hanaro.hanafun.lesson.exception.LessonNotFoundException;
@@ -105,5 +106,27 @@ public class LessonServiceImpl implements LessonService {
                     .build();
             lessonDateRepository.save(lessonDate);
         }
+    }
+
+    // 클래스 전체 조회 (클래스 탐색)
+    @Transactional
+    @Override
+    public List<FullLessonResDto> fullLesson() {
+        List<LessonEntity> lessonList = lessonRepository.findAll();
+
+        List<FullLessonResDto> fullLessonResDtos = lessonList.stream()
+                .map(lesson -> {
+                    FullLessonResDto fullLessonResDto = FullLessonResDto.builder()
+                            .lessonId(lesson.getLessonId())
+                            .image(lesson.getImage())
+                            .title(lesson.getTitle())
+                            .price(lesson.getPrice())
+                            .hostName(lesson.getHostEntity().getUserEntity().getUsername())
+                            .build();
+                    return fullLessonResDto;
+                })
+                .collect(Collectors.toList());
+
+        return fullLessonResDtos;
     }
 }
