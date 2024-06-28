@@ -6,7 +6,7 @@ import com.hanaro.hanafun.host.exception.HostNotFoundException;
 import com.hanaro.hanafun.lesson.domain.LessonEntity;
 import com.hanaro.hanafun.lesson.domain.LessonRepository;
 import com.hanaro.hanafun.revenue.domain.RevenueRepository;
-import com.hanaro.hanafun.revenue.dto.YearRevenueResDto;
+import com.hanaro.hanafun.revenue.dto.totalRevenueResDto;
 import com.hanaro.hanafun.revenue.service.RevenueService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,14 +23,14 @@ public class RevenueServiceImpl implements RevenueService {
 
     @Override
     @Transactional
-    public YearRevenueResDto yearRevenue(Long userId, Integer year) {
+    public totalRevenueResDto totalRevenue(Long userId) {
         Long yearRevenue;
         HostEntity hostEntity = hostRepository.findByUserEntityUserId(userId).orElseThrow(() -> new HostNotFoundException());
 
         List<LessonEntity> lessonEntityList = lessonRepository.findByHostEntityHostId(hostEntity.getHostId()).orElseThrow(() -> new HostNotFoundException());
-        yearRevenue = lessonEntityList.stream().mapToLong(lessonEntity -> revenueRepository.yearRevenueByLessonId(lessonEntity)).sum();
+        yearRevenue = lessonEntityList.stream().mapToLong(lessonEntity -> revenueRepository.totalRevenueByLessonId(lessonEntity)).sum();
 
-        return new YearRevenueResDto().builder()
+        return new totalRevenueResDto().builder()
                 .yearRevenue(yearRevenue)
                 .build();
     }

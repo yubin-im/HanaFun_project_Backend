@@ -6,7 +6,7 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class HostMapper {
-    public HostLessonDto LessonEntityToHostLessonDto(LessonEntity lessonEntity){
+    public static HostLessonDto LessonEntityToHostLessonDto(LessonEntity lessonEntity){
         if(lessonEntity == null) return null;
 
         return new HostLessonDto().builder()
