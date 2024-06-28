@@ -1,4 +1,4 @@
-package com.hanaro.hanafun.authentication;
+package com.hanaro.hanafun.common.authentication;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

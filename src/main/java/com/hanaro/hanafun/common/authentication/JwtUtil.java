@@ -1,4 +1,4 @@
-package com.hanaro.hanafun.authentication;
+package com.hanaro.hanafun.common.authentication;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -28,7 +28,7 @@ public class JwtUtil {
     @Value("${jwt.claims.auth-key}")
     private String authKey;
 
-    @PostConstruct // 의존성 주입이 끝난 후 초기화를 수행!! secretKey를 암호화
+    @PostConstruct
     protected void init() {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }

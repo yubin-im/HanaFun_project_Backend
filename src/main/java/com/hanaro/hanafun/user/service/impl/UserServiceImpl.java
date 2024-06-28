@@ -1,6 +1,6 @@
 package com.hanaro.hanafun.user.service.impl;
 
-import com.hanaro.hanafun.authentication.JwtUtil;
+import com.hanaro.hanafun.common.authentication.JwtUtil;
 import com.hanaro.hanafun.user.domain.UserEntity;
 import com.hanaro.hanafun.user.domain.UserRepository;
 import com.hanaro.hanafun.user.dto.IsHostResDto;

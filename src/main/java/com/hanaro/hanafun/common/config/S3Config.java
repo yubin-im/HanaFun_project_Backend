@@ -1,4 +1,4 @@
-package com.hanaro.hanafun.config;
+package com.hanaro.hanafun.common.config;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;

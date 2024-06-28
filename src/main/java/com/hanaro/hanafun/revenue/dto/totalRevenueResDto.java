@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class YearRevenueResDto {
+public class totalRevenueResDto {
     private long yearRevenue;
 }

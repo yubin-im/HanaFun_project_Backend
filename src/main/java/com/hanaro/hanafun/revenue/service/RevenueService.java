@@ -1,7 +1,7 @@
 package com.hanaro.hanafun.revenue.service;
 
-import com.hanaro.hanafun.revenue.dto.YearRevenueResDto;
+import com.hanaro.hanafun.revenue.dto.totalRevenueResDto;
 
 public interface RevenueService {
-    YearRevenueResDto yearRevenue(Long userId, Integer year);
+    totalRevenueResDto totalRevenue(Long userId);
 }

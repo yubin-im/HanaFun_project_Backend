@@ -6,7 +6,7 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class AccountMapper {
-    public AccountResDto entityToAccountResDto(AccountEntity accountEntity){
+    public static AccountResDto entityToAccountResDto(AccountEntity accountEntity){
         if(accountEntity == null) return null;
 
         return AccountResDto.builder()
