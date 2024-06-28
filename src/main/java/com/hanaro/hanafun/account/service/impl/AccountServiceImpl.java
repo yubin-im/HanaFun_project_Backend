@@ -19,6 +19,10 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public List<AccountResDto> readAccountList(Long userId) {
         List<AccountEntity> accountEntityList = accountRepository.findByUserEntityUserId(userId).orElseThrow(() -> new AccountNotFoundException());
+        if(accountEntityList.isEmpty()){
+            throw new AccountNotFoundException();
+        }
+
         return accountEntityList.stream().map(AccountMapper::entityToAccountResDto).toList();
     }
 }
