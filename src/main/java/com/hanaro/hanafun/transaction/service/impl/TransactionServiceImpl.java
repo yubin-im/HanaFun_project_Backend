@@ -61,12 +61,16 @@ public class TransactionServiceImpl implements TransactionService {
         //매출 업데이트
         calcRevenue(qrReqDto.getLessonId(), qrReqDto.getPayment());
 
+        //게스트 id 건지기
+        AccountEntity accountEntity = accountRepository.findById(qrReqDto.getWithdrawId()).orElseThrow(() -> new AccountNotFoundException());
+        Long guestId = accountEntity.getUserEntity().getUserId();
+
         //거래 내역 저장
         TransactionEntity transactionEntity = TransactionEntity.builder()
                 .depositAccount(depositAccount)
                 .withdrawAccount(withdrawAccount)
                 .reservationEntity(reservationRepository
-                        .findByUserEntityUserIdAndLessonDateEntityLessondateId(qrReqDto.getGuestId(), qrReqDto.getLessondateId())
+                        .findByUserEntityUserIdAndLessonDateEntityLessondateId(guestId, qrReqDto.getLessondateId())
                         .get())
                 .payment(qrReqDto.getPayment())
                 .point(0)
