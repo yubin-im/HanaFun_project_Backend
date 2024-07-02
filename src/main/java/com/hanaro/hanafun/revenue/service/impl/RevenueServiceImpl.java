@@ -56,8 +56,9 @@ public class RevenueServiceImpl implements RevenueService {
                 .flatMap(lessonEntity -> revenueRepository.findByLessonEntityAndCreatedDateBetween(lessonEntity, startOfMonth, endOfMonth).stream())
                 .collect(Collectors.toList());
 
-        List<MonthRevenueResDto> monthRevenueResDtoList = revenueEntityList.stream().map(RevenueMapper::revenueEntityToMonthRevenueDto).toList();
-        return monthRevenueResDtoList;
+        return revenueEntityList.stream()
+                .map(RevenueMapper::revenueEntityToMonthRevenueDto)
+                .toList();
     }
 
     @Override
@@ -68,9 +69,10 @@ public class RevenueServiceImpl implements RevenueService {
         LocalDateTime endOfYear = searchYear.atMonth(12).atEndOfMonth().atTime(23,59,59);
 
         List<RevenueEntity> revenueEntityList = revenueRepository.findByLessonEntityLessonIdAndCreatedDateBetween(lessonId, startOfYear, endOfYear).orElseThrow();
-        List<LessonRevenueResDto> lessonRevenueResDtoList = revenueEntityList.stream().map(RevenueMapper::revenueEntityToLessonRevenueResDto).toList();
 
-        return  lessonRevenueResDtoList;
+        return revenueEntityList.stream()
+                .map(RevenueMapper::revenueEntityToLessonRevenueResDto)
+                .toList();
     }
 
     @Override
@@ -94,5 +96,4 @@ public class RevenueServiceImpl implements RevenueService {
                 .etcPrice(revenueEntity.getEtcPrice())
                 .build();
     }
-
 }
