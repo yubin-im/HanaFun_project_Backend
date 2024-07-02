@@ -12,6 +12,10 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -22,6 +26,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception, AuthenticationException {
         http
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .httpBasic(httpBasic -> httpBasic.disable())
                 .formLogin(formLogin -> formLogin.disable())
@@ -33,8 +38,29 @@ public class SecurityConfig {
 //                        .anyRequest().permitAll()
                         .anyRequest().authenticated()
                 )
+                .addFilterBefore(corsFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    @Bean
+    public UrlBasedCorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        // TODO CORS 설정 변경 필요
+        config.addAllowedOrigin("http://localhost:3000");
+        config.addAllowedOrigin("https://hana-fun-fe.vercel.app");
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("*");
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
+    }
+
+    @Bean
+    public CorsFilter corsFilter() {
+        return new CorsFilter(corsConfigurationSource());
     }
 }
