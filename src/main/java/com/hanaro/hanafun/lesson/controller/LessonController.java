@@ -12,6 +12,7 @@ import com.hanaro.hanafun.lessondate.dto.response.LessonDetailResDto;
 import com.hanaro.hanafun.lessondate.service.LessonDateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,8 +28,8 @@ public class LessonController {
 
     // 개설 클래스 관리- 개설 클래스 목록 출력
     @GetMapping("/reservation/my/opened")
-    public ResponseEntity<ApiResponse> openedLessons(@RequestBody OpenedLessonsReqDto openedLessonsReqDto) {
-        List<OpenedLessonsResDto> openedLessons = lessonService.openedLessons(openedLessonsReqDto);
+    public ResponseEntity<ApiResponse> openedLessons(@AuthenticationPrincipal Long userId) {
+        List<OpenedLessonsResDto> openedLessons = lessonService.openedLessons(userId);
         return ResponseEntity.ok(new ApiResponse<>(true, "ok", openedLessons));
     }
 

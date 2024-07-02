@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface LessonService {
     // 개설 클래스 관리- 개설 클래스 목록 출력
-    List<OpenedLessonsResDto> openedLessons(OpenedLessonsReqDto openedLessonsReqDto);
+    List<OpenedLessonsResDto> openedLessons(Long userId);
 
     // 클래스 상세보기
     LessonInfoResDto lessonInfo(Long lessonId);

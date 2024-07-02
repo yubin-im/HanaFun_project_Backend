@@ -37,8 +37,8 @@ public class LessonServiceImpl implements LessonService {
     // 개설 클래스 관리- 개설 클래스 목록 출력
     @Transactional
     @Override
-    public List<OpenedLessonsResDto> openedLessons(OpenedLessonsReqDto openedLessonsReqDto) {
-        HostEntity host = hostRepository.findHostEntityByUserEntity_UserId(openedLessonsReqDto.getUserId());
+    public List<OpenedLessonsResDto> openedLessons(Long userId) {
+        HostEntity host = hostRepository.findHostEntityByUserEntity_UserId(userId);
         List<LessonEntity> lessons = lessonRepository.findLessonEntitiesByHostEntity(host);
 
         List<OpenedLessonsResDto> openedLessons = lessons.stream()
