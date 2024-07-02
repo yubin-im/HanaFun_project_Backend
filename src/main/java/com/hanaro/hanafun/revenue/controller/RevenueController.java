@@ -33,7 +33,7 @@ public class RevenueController {
         return ResponseEntity.ok(new ApiResponse(true, "ok", lessonRevenueResDtoList));
     }
 
-    @PostMapping("/update")
+    @PutMapping("/update")
     public ResponseEntity<ApiResponse> updatePrice(@RequestBody UpdatePriceReqDto updatePriceReqDto){
         UpdatePriceResDto updatePriceResDto = revenueService.updatePrice(updatePriceReqDto);
         return ResponseEntity.ok(new ApiResponse(true, "ok", updatePriceResDto));
