@@ -20,4 +20,19 @@ public interface LessonService {
 
     // 클래스 전체 조회 (클래스 탐색)
     List<FullLessonResDto> fullLesson();
+
+    // 카테고리별 클래스 조회
+    List<FullLessonResDto> categoryLesson(Long categoryId);
+
+    // 클래스 검색(전체)
+    List<FullLessonResDto> searchLessonAll(String query);
+
+    // 클래스 검색(카테고리)
+    List<FullLessonResDto> searchLessonCategory(Long categoryId, String query);
+
+    // 클래스 필터(전체)
+    List<FullLessonResDto> searchFilterLessonAll(String query, String sort);
+
+    // 클래스 필터(카테고리)
+    List<FullLessonResDto> searchFilterLessonCategory(Long categoryId, String query, String sort);
 }

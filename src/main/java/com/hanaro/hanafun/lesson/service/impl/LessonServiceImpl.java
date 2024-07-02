@@ -18,10 +18,12 @@ import com.hanaro.hanafun.lesson.service.LessonService;
 import com.hanaro.hanafun.lessondate.domain.LessonDateEntity;
 import com.hanaro.hanafun.lessondate.domain.LessonDateRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -114,19 +116,77 @@ public class LessonServiceImpl implements LessonService {
     public List<FullLessonResDto> fullLesson() {
         List<LessonEntity> lessonList = lessonRepository.findAll();
 
-        List<FullLessonResDto> fullLessonResDtos = lessonList.stream()
-                .map(lesson -> {
-                    FullLessonResDto fullLessonResDto = FullLessonResDto.builder()
-                            .lessonId(lesson.getLessonId())
-                            .image(lesson.getImage())
-                            .title(lesson.getTitle())
-                            .price(lesson.getPrice())
-                            .hostName(lesson.getHostEntity().getUserEntity().getUsername())
-                            .build();
-                    return fullLessonResDto;
-                })
-                .collect(Collectors.toList());
+        return searchLessonList(lessonList);
+    }
 
-        return fullLessonResDtos;
+    // 카테고리 별 클래스 조회
+    @Transactional
+    @Override
+    public List<FullLessonResDto> categoryLesson(Long categoryId) {
+        List<LessonEntity> lessonList = lessonRepository.findByCategoryEntityCategoryId(categoryId)
+                .orElseThrow(()->new CategoryNotFoundException());
+
+        if(lessonList.isEmpty()) throw new CategoryNotFoundException();
+
+        return searchLessonList(lessonList);
+    }
+
+    // 클래스 검색(전체)
+    @Transactional
+    @Override
+    public List<FullLessonResDto> searchLessonAll(String query) {
+        List<LessonEntity> lessonList = lessonRepository.findBySearchLessonAll(query);
+
+        return searchLessonList(lessonList);
+    }
+
+    // 클래스 검색(카테고리)
+    @Transactional
+    @Override
+    public List<FullLessonResDto> searchLessonCategory(Long categoryId, String query) {
+        List<LessonEntity> lessonList = lessonRepository.findBySearchLessonCategory(categoryId, query);
+
+        return searchLessonList(lessonList);
+    }
+
+    // 클래스 필터(전체)
+    @Transactional
+    @Override
+    public List<FullLessonResDto> searchFilterLessonAll(String query, String sort) {
+        List<LessonEntity> lessonList = switch (sort) {
+            case "date" -> lessonRepository.findSearchFilterLessonAllByOrderByDate(query);
+            case "popular" -> lessonRepository.findSearchFilterLessonAllByOrderByApplicantSum(query);
+            case "priceAsc" -> lessonRepository.findSearchFilterLessonAllByOrderByPriceAsc(query);
+            case "priceDesc" -> lessonRepository.findSearchFilterLessonAllByOrderByPriceDesc(query);
+            default -> throw new LessonNotFoundException();
+        };
+
+        return searchLessonList(lessonList);
+    }
+
+    @Transactional
+    @Override
+    public List<FullLessonResDto> searchFilterLessonCategory(Long categoryId, String query, String sort) {
+        List<LessonEntity> lessonList = switch (sort) {
+            case "date" -> lessonRepository.findSearchFilterLessonCategoryByOrderByDate(categoryId, query);
+            case "popular" -> lessonRepository.findSearchFilterLessonCategoryByOrderByApplicantSum(categoryId, query);
+            case "priceAsc" -> lessonRepository.findSearchFilterLessonCategoryByOrderByPriceAsc(categoryId, query);
+            case "priceDesc" -> lessonRepository.findSearchFilterLessonCategoryByOrderByPriceDesc(categoryId, query);
+            default -> throw new LessonNotFoundException();
+        };
+        return searchLessonList(lessonList);
+    }
+
+    public List<FullLessonResDto> searchLessonList(List<LessonEntity> lessonlist){
+        return lessonlist.stream().map(lesson -> {
+            FullLessonResDto fullLessonResDto = FullLessonResDto.builder()
+                    .lessonId(lesson.getLessonId())
+                    .image(lesson.getImage())
+                    .title(lesson.getTitle())
+                    .price(lesson.getPrice())
+                    .hostName(lesson.getHostEntity().getUserEntity().getUsername())
+                    .build();
+            return fullLessonResDto;
+        }).collect(Collectors.toList());
     }
 }
