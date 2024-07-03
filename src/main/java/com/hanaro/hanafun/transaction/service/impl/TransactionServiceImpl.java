@@ -49,8 +49,8 @@ public class TransactionServiceImpl implements TransactionService {
     private final HanastorageRepository hanastorageRepository;
     private final TransactionRepository transactionRepository;
 
-    static private String PLUS = "PLUS";
-    static private String MINUS = "MINUS";
+    static String PLUS = "PLUS";
+    static String MINUS = "MINUS";
 
     @Override
     @Transactional //RuntimeException 자동 롤백
@@ -63,9 +63,7 @@ public class TransactionServiceImpl implements TransactionService {
         TransactionEntity transactionEntity = TransactionEntity.builder()
                 .depositAccount(depositAccount)
                 .withdrawAccount(withdrawAccount)
-                .reservationEntity(reservationRepository
-                        .findByUserEntityAndLessonDateEntityLessondateId(withdrawAccount.getUserEntity(), qrReqDto.getLessondateId())
-                        .orElseThrow(() -> new ReservationNotFounException()))
+                .reservationEntity(null)
                 .payment(qrReqDto.getPayment())
                 .point(0)
                 .type(Type.QR)
