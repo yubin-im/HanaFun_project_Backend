@@ -45,7 +45,7 @@ public class ReservationServiceImpl implements ReservationService {
         LocalDate today = LocalDate.now();  // 오늘이후 날짜의 예약만 출력
 
         List<ReservationList> lessons = reservations.stream()
-                .filter(reservation -> !reservation.getLessonDateEntity().getDate().isBefore(today))
+                .filter(reservation -> !reservation.getLessonDateEntity().getDate().isBefore(today) && !reservation.isDeleted())
                 .map(reservation -> {
                     LessonDateEntity lessonDate = reservation.getLessonDateEntity();
                     LessonEntity lessonEntity = lessonDate.getLessonEntity();
@@ -80,6 +80,7 @@ public class ReservationServiceImpl implements ReservationService {
         List<ReservationEntity> reservations = reservationRepository.findReservationEntitiesByUserEntity(user);
 
         List<ReservationList> lessons = reservations.stream()
+                .filter(reservation -> !reservation.isDeleted())
                 .map(reservation -> {
                     LessonDateEntity lessonDate = reservation.getLessonDateEntity();
                     LessonEntity lessonEntity = lessonDate.getLessonEntity();
