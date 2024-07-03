@@ -10,10 +10,10 @@ public interface ReservationService {
     MyPageResDto myPage(Long userId);
 
     // 나의 신청 클래스 데이터 출력
-    List<ReservationList> myLessons(MyPageReqDto myPageReqDto);
+    List<ReservationList> myLessons(Long userId);
 
     // 신청 클래스 일정 데이터 출력
-    List<MyScheduleResDto> mySchedules(MyScheduleReqDto myScheduleReqDto);
+    List<MyScheduleResDto> mySchedules(Long userId, MyScheduleReqDto myScheduleReqDto);
 
     // 개설 클래스 상세- 강좌날짜 별 예약자 정보 출력
     LessonDateDetailResDto lessonDateDetail(LessonDateDetailReqDto lessonDateDetailReqDto);
