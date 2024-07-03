@@ -33,8 +33,8 @@ public class ReservationController {
 
     // 신청 클래스 일정 데이터 출력
     @GetMapping("/my/schedule")
-    public ResponseEntity<ApiResponse> mySchedules(@RequestBody MyScheduleReqDto myScheduleReqDto) {
-        List<MyScheduleResDto> mySchedules = reservationService.mySchedules(myScheduleReqDto);
+    public ResponseEntity<ApiResponse> mySchedules(@AuthenticationPrincipal Long userId, @RequestBody MyScheduleReqDto myScheduleReqDto) {
+        List<MyScheduleResDto> mySchedules = reservationService.mySchedules(userId, myScheduleReqDto);
         return ResponseEntity.ok(new ApiResponse<>(true, "ok", mySchedules));
     }
 

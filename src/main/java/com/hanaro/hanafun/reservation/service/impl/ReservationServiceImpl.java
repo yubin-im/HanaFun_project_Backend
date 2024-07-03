@@ -104,8 +104,8 @@ public class ReservationServiceImpl implements ReservationService {
     // 신청 클래스 일정 데이터 출력
     @Transactional
     @Override
-    public List<MyScheduleResDto> mySchedules(MyScheduleReqDto myScheduleReqDto) {
-        UserEntity user = userRepository.findById(myScheduleReqDto.getUserId()).orElseThrow(() -> new UserNotFoundException());
+    public List<MyScheduleResDto> mySchedules(Long userId, MyScheduleReqDto myScheduleReqDto) {
+        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException());
         List<ReservationEntity> reservations = reservationRepository.findReservationEntitiesByUserEntity(user);
 
         List<MyScheduleResDto> mySchedules = reservations.stream()
