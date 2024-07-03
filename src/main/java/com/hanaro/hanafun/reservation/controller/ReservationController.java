@@ -26,8 +26,8 @@ public class ReservationController {
 
     // 나의 신청 클래스 데이터 출력
     @GetMapping("/my/lessons")
-    public ResponseEntity<ApiResponse> myLessons(@RequestBody MyPageReqDto myPageReqDto) {
-        List<ReservationList> lessons = reservationService.myLessons(myPageReqDto);
+    public ResponseEntity<ApiResponse> myLessons(@AuthenticationPrincipal Long userId) {
+        List<ReservationList> lessons = reservationService.myLessons(userId);
         return ResponseEntity.ok(new ApiResponse<>(true, "ok", lessons));
     }
 

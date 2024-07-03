@@ -75,8 +75,8 @@ public class ReservationServiceImpl implements ReservationService {
     // 나의 신청 클래스 데이터 출력
     @Transactional
     @Override
-    public List<ReservationList> myLessons(MyPageReqDto myPageReqDto) {
-        UserEntity user = userRepository.findById(myPageReqDto.getUserId()).orElseThrow(() -> new UserNotFoundException());
+    public List<ReservationList> myLessons(Long userId) {
+        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException());
         List<ReservationEntity> reservations = reservationRepository.findReservationEntitiesByUserEntity(user);
 
         List<ReservationList> lessons = reservations.stream()
