@@ -22,5 +22,5 @@ public interface ReservationService {
     BookLessonResDto bookLesson(Long userId, BookLessonReqDto bookLessonReqDto);
 
     // 클래스 취소하기 (환불 제외)
-    void cancelLesson(CancelLessonReqDto cancelLessonReqDto);
+    CancelLessonResDto cancelLesson(CancelLessonReqDto cancelLessonReqDto);
 }
