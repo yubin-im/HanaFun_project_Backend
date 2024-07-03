@@ -8,10 +8,7 @@ import com.hanaro.hanafun.common.dto.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -27,7 +24,7 @@ public class AccountController {
         return ResponseEntity.ok(new ApiResponse(true, "ok", accountResDtoList));
     }
 
-    @GetMapping("/pw")
+    @PostMapping("/pw")
     ResponseEntity<ApiResponse> checkAccountPw(@RequestBody PwReqDto pwReqDto){
         PwResDto pwResDto = accountService.checkAccountPw(pwReqDto);
         return ResponseEntity.ok(new ApiResponse(true, "ok", pwResDto));
