@@ -61,7 +61,7 @@ public class ReservationController {
 
     // 클래스 취소하기 (환불 제외)
     @PostMapping("/cancel")
-    public void cancelLesson(@RequestBody CancelLessonReqDto cancelLessonReqDto) {
-        reservationService.cancelLesson(cancelLessonReqDto);
+    public CancelLessonResDto cancelLesson(@RequestBody CancelLessonReqDto cancelLessonReqDto) {
+        return reservationService.cancelLesson(cancelLessonReqDto);
     }
 }

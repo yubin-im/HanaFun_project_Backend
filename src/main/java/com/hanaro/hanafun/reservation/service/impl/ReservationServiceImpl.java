@@ -216,8 +216,17 @@ public class ReservationServiceImpl implements ReservationService {
     // 클래스 취소하기 (환불 제외)
     @Transactional
     @Override
-    public void cancelLesson(CancelLessonReqDto cancelLessonReqDto) {
-        ReservationEntity reservation = reservationRepository.findById(cancelLessonReqDto.getReservationId()).orElseThrow(() -> new ReservationNotFounException());
+    public CancelLessonResDto cancelLesson(CancelLessonReqDto cancelLessonReqDto) {
+        // 예약 조회
+        ReservationEntity reservation = reservationRepository.findById(cancelLessonReqDto.getReservationId()).orElse(null);
+
+        // 예약이 없는 경우
+        if (reservation == null) {
+            return CancelLessonResDto.builder()
+                    .isSuccess(false)
+                    .message("취소 실패: 예약을 찾을 수 없습니다.")
+                    .build();
+        }
 
         // 클래스 취소 (논리적 삭제)
         reservation.updateIsDeleted(true);
@@ -232,5 +241,11 @@ public class ReservationServiceImpl implements ReservationService {
         LessonEntity lesson = lessonDate.getLessonEntity();
         lesson.updateApplicantSum(lesson.getApplicantSum() - reservation.getApplicant());
         lessonRepository.save(lesson);
+
+        // 취소 성공 response
+        return CancelLessonResDto.builder()
+                .isSuccess(true)
+                .message("취소 성공")
+                .build();
     }
 }
