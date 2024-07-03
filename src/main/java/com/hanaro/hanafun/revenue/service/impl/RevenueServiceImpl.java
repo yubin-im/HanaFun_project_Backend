@@ -33,14 +33,18 @@ public class RevenueServiceImpl implements RevenueService {
     @Override
     @Transactional
     public TotalRevenueResDto totalRevenue(Long userId) {
-        Long yearRevenue;
-        HostEntity hostEntity = hostRepository.findByUserEntityUserId(userId).orElseThrow(() -> new HostNotFoundException());
+        //호스트 가져오기
+        HostEntity hostEntity = hostRepository.findByUserEntityUserId(userId)
+                .orElseThrow(() -> new HostNotFoundException());
 
-        List<LessonEntity> lessonEntityList = lessonRepository.findByHostEntityHostId(hostEntity.getHostId()).orElseThrow();
-        yearRevenue = lessonEntityList.stream().mapToLong(lessonEntity -> revenueRepository.totalRevenueByLessonId(lessonEntity)).sum();
+        //호스트의 강좌 목록 가져오기
+        List<LessonEntity> lessonEntityList = lessonRepository.findByHostEntityHostId(hostEntity.getHostId())
+                .orElseThrow(() -> new LessonNotFoundException());
 
         return new TotalRevenueResDto().builder()
-                .yearRevenue(yearRevenue)
+                .totalRevenue(lessonEntityList.stream()
+                        .mapToLong(lessonEntity -> revenueRepository.totalRevenueByLessonId(lessonEntity))
+                        .sum())
                 .build();
     }
 
