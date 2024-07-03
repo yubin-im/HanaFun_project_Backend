@@ -7,7 +7,7 @@ import com.hanaro.hanafun.lessondate.service.LessonDateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -19,7 +19,11 @@ public class LessonDateController {
 
     // 클래스 예약 가능 날짜 출력
     @GetMapping("/lesson/date-select")
-    public ResponseEntity<ApiResponse> availableDate(@RequestBody AvailableDateReqDto availableDateReqDto) {
+    public ResponseEntity<ApiResponse> availableDate(@RequestParam Long lessonId) {
+        AvailableDateReqDto availableDateReqDto = AvailableDateReqDto.builder()
+                .lessonId(lessonId)
+                .build();
+
         List<AvailableDateResDto> availableDateResDtoList = lessonDateService.availableDate(availableDateReqDto);
         return ResponseEntity.ok(new ApiResponse<>(true, "ok", availableDateResDtoList));
     }

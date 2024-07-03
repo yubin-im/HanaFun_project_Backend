@@ -79,8 +79,8 @@ public class LessonServiceImpl implements LessonService {
     // 클래스 등록하기
     @Transactional
     @Override
-    public void createLesson(CreateLessonReqDto createLessonReqDto) {
-        HostEntity host = hostRepository.findHostEntityByUserEntity_UserId(createLessonReqDto.getUserId());
+    public void createLesson(Long userId, CreateLessonReqDto createLessonReqDto) {
+        HostEntity host = hostRepository.findHostEntityByUserEntity_UserId(userId);
         CategoryEntity category = categoryRepository.findById(createLessonReqDto.getCategoryId()).orElseThrow(() -> new CategoryNotFoundException());
 
         // Lesson 추가

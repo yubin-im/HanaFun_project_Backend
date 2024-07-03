@@ -6,7 +6,6 @@ import java.util.List;
 
 @Getter
 public class CreateLessonReqDto {
-    private Long userId;
     private Long categoryId;
     private String title;
     private String location;

@@ -16,7 +16,7 @@ public interface LessonService {
     LessonInfoResDto lessonInfo(Long lessonId);
 
     // 클래스 등록하기
-    void createLesson(CreateLessonReqDto createLessonReqDto);
+    void createLesson(Long userId, CreateLessonReqDto createLessonReqDto);
 
     // 클래스 전체 조회 (클래스 탐색)
     List<FullLessonResDto> fullLesson();

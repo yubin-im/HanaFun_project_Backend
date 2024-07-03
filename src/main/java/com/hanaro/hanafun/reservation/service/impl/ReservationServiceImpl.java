@@ -165,7 +165,7 @@ public class ReservationServiceImpl implements ReservationService {
     // 클래스 예약하기 (결제 제외)
     @Transactional
     @Override
-    public BookLessonResDto bookLesson(BookLessonReqDto bookLessonReqDto) {
+    public BookLessonResDto bookLesson(Long userId, BookLessonReqDto bookLessonReqDto) {
         // 계좌 비밀번호 확인
         AccountEntity account = accountRepository.findById(bookLessonReqDto.getAccountId()).orElseThrow(() -> new AccountNotFoundException());
         if (!account.getPassword().equals(bookLessonReqDto.getPassword())) {
@@ -184,8 +184,7 @@ public class ReservationServiceImpl implements ReservationService {
         }
 
         // 해당 날짜에 예약 이미 있는지 확인
-        Optional<ReservationEntity> existingReservation = reservationRepository.findReservationEntityByUserEntity_UserIdAndLessonDateEntity_LessondateId(
-                bookLessonReqDto.getUserId(), bookLessonReqDto.getLessondateId());
+        Optional<ReservationEntity> existingReservation = reservationRepository.findReservationEntityByUserEntity_UserIdAndLessonDateEntity_LessondateId(userId, bookLessonReqDto.getLessondateId());
         if (existingReservation.isPresent()) {
             return BookLessonResDto.builder()
                     .message("이미 예약이 존재합니다.")
@@ -193,7 +192,7 @@ public class ReservationServiceImpl implements ReservationService {
         }
 
         // 예약 추가
-        UserEntity user = userRepository.findUserEntityByUserId(bookLessonReqDto.getUserId()).orElseThrow(() -> new UserNotFoundException());
+        UserEntity user = userRepository.findUserEntityByUserId(userId).orElseThrow(() -> new UserNotFoundException());
         ReservationEntity reservation = ReservationEntity.builder()
                 .userEntity(user)
                 .lessonDateEntity(lessonDate)
