@@ -38,8 +38,8 @@ public class ReservationServiceImpl implements ReservationService {
     // 마이페이지 데이터 출력
     @Transactional
     @Override
-    public MyPageResDto myPage(MyPageReqDto myPageReqDto) {
-        UserEntity user = userRepository.findById(myPageReqDto.getUserId()).orElseThrow(() -> new UserNotFoundException());
+    public MyPageResDto myPage(Long userId) {
+        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException());
         List<ReservationEntity> reservations = reservationRepository.findReservationEntitiesByUserEntity(user);
 
         LocalDate today = LocalDate.now();  // 오늘이후 날짜의 예약만 출력

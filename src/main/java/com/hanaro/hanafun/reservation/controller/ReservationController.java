@@ -6,6 +6,7 @@ import com.hanaro.hanafun.reservation.dto.response.*;
 import com.hanaro.hanafun.reservation.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,8 +19,8 @@ public class ReservationController {
 
     // 마이페이지 데이터 출력
     @GetMapping("/my")
-    public ResponseEntity<ApiResponse> myPage(@RequestBody MyPageReqDto myPageReqDto) {
-        MyPageResDto myPageResDto = reservationService.myPage(myPageReqDto);
+    public ResponseEntity<ApiResponse> myPage(@AuthenticationPrincipal Long userId) {
+        MyPageResDto myPageResDto = reservationService.myPage(userId);
         return ResponseEntity.ok(new ApiResponse<>(true, "ok", myPageResDto));
     }
 
