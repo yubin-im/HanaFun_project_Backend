@@ -19,7 +19,7 @@ public interface ReservationService {
     LessonDateDetailResDto lessonDateDetail(LessonDateDetailReqDto lessonDateDetailReqDto);
 
     // 클래스 예약하기 (결제 제외)
-    BookLessonResDto bookLesson(BookLessonReqDto bookLessonReqDto);
+    BookLessonResDto bookLesson(Long userId, BookLessonReqDto bookLessonReqDto);
 
     // 클래스 취소하기 (환불 제외)
     void cancelLesson(CancelLessonReqDto cancelLessonReqDto);
