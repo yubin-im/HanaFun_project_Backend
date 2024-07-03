@@ -26,15 +26,15 @@ public class ReservationController {
 
     // 나의 신청 클래스 데이터 출력
     @GetMapping("/my/lessons")
-    public ResponseEntity<ApiResponse> myLessons(@RequestBody MyPageReqDto myPageReqDto) {
-        List<ReservationList> lessons = reservationService.myLessons(myPageReqDto);
+    public ResponseEntity<ApiResponse> myLessons(@AuthenticationPrincipal Long userId) {
+        List<ReservationList> lessons = reservationService.myLessons(userId);
         return ResponseEntity.ok(new ApiResponse<>(true, "ok", lessons));
     }
 
     // 신청 클래스 일정 데이터 출력
     @GetMapping("/my/schedule")
-    public ResponseEntity<ApiResponse> mySchedules(@RequestBody MyScheduleReqDto myScheduleReqDto) {
-        List<MyScheduleResDto> mySchedules = reservationService.mySchedules(myScheduleReqDto);
+    public ResponseEntity<ApiResponse> mySchedules(@AuthenticationPrincipal Long userId, @RequestBody MyScheduleReqDto myScheduleReqDto) {
+        List<MyScheduleResDto> mySchedules = reservationService.mySchedules(userId, myScheduleReqDto);
         return ResponseEntity.ok(new ApiResponse<>(true, "ok", mySchedules));
     }
 
