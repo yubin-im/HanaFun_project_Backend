@@ -209,7 +209,7 @@ public class ReservationServiceImpl implements ReservationService {
         lessonRepository.save(lesson);
 
         return BookLessonResDto.builder()
-                .message("예약완료")
+                .message(String.valueOf(reservation.getReservationId()))
                 .build();
     }
 
