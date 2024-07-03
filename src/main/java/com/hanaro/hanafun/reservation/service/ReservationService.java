@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface ReservationService {
     // 마이페이지 데이터 출력
-    MyPageResDto myPage(MyPageReqDto myPageReqDto);
+    MyPageResDto myPage(Long userId);
 
     // 나의 신청 클래스 데이터 출력
     List<ReservationList> myLessons(MyPageReqDto myPageReqDto);
