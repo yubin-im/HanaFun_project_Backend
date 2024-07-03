@@ -6,12 +6,14 @@ import com.hanaro.hanafun.account.exception.AccountBalanceException;
 import com.hanaro.hanafun.account.exception.AccountNotFoundException;
 import com.hanaro.hanafun.hanastorage.domain.HanastorageEntity;
 import com.hanaro.hanafun.hanastorage.domain.HanastorageRepository;
-import com.hanaro.hanafun.host.domain.HostEntity;
-import com.hanaro.hanafun.lesson.domain.LessonEntity;
+import com.hanaro.hanafun.hanastorage.exception.HanastorageNotFoundException;
 import com.hanaro.hanafun.lesson.domain.LessonRepository;
+import com.hanaro.hanafun.lesson.exception.LessonNotFoundException;
 import com.hanaro.hanafun.lessondate.domain.LessonDateEntity;
 import com.hanaro.hanafun.lessondate.domain.LessonDateRepository;
+import com.hanaro.hanafun.lessondate.exception.LessonDateNotFoundException;
 import com.hanaro.hanafun.reservation.domain.ReservationRepository;
+import com.hanaro.hanafun.reservation.exception.ReservationNotFounException;
 import com.hanaro.hanafun.revenue.domain.RevenueEntity;
 import com.hanaro.hanafun.revenue.domain.RevenueRepository;
 import com.hanaro.hanafun.transaction.domain.TransactionEntity;
@@ -21,6 +23,7 @@ import com.hanaro.hanafun.transaction.dto.PaybackReqDto;
 import com.hanaro.hanafun.transaction.dto.QrReqDto;
 import com.hanaro.hanafun.transaction.dto.SimpleReqDto;
 import com.hanaro.hanafun.transaction.enums.Type;
+import com.hanaro.hanafun.transaction.exception.TransactionNotFoundException;
 import com.hanaro.hanafun.transaction.service.TransactionService;
 import com.hanaro.hanafun.user.domain.UserEntity;
 import com.hanaro.hanafun.user.domain.UserRepository;
@@ -33,7 +36,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -47,36 +49,33 @@ public class TransactionServiceImpl implements TransactionService {
     private final HanastorageRepository hanastorageRepository;
     private final TransactionRepository transactionRepository;
 
-    static private String PLUS = "PLUS";
-    static private String MINUS = "MINUS";
-    static private String ZERO = "ZERO";
+    static String PLUS = "PLUS";
+    static String MINUS = "MINUS";
 
     @Override
-    @Transactional
+    @Transactional //RuntimeException 자동 롤백
     public PayResDto qrPay(QrReqDto qrReqDto) {
-        //계좌 업데이트
-        AccountEntity withdrawAccount = calcAccount(qrReqDto.getWithdrawId(), qrReqDto.getPayment(), MINUS);
-        AccountEntity depositAccount = calcAccount(qrReqDto.getDepositId(), qrReqDto.getPayment(), PLUS);
+        //계좌 가져오기
+        AccountEntity withdrawAccount = accountRepository.findById(qrReqDto.getWithdrawId()).orElseThrow(() -> new AccountNotFoundException());
+        AccountEntity depositAccount = accountRepository.findById(qrReqDto.getDepositId()).orElseThrow(() -> new AccountNotFoundException());
 
-        //매출 업데이트
-        calcRevenue(qrReqDto.getLessonId(), qrReqDto.getPayment());
-
-        //게스트 id 건지기
-        AccountEntity accountEntity = accountRepository.findById(qrReqDto.getWithdrawId()).orElseThrow(() -> new AccountNotFoundException());
-        Long guestId = accountEntity.getUserEntity().getUserId();
-
-        //거래 내역 저장
+        //거래 내역 저장 _ QR
         TransactionEntity transactionEntity = TransactionEntity.builder()
                 .depositAccount(depositAccount)
                 .withdrawAccount(withdrawAccount)
-                .reservationEntity(reservationRepository
-                        .findByUserEntityUserIdAndLessonDateEntityLessondateId(guestId, qrReqDto.getLessondateId())
-                        .get())
+                .reservationEntity(null)
                 .payment(qrReqDto.getPayment())
                 .point(0)
                 .type(Type.QR)
                 .build();
         TransactionEntity createdTransaction = transactionRepository.save(transactionEntity);
+
+        //계좌 잔액 업데이트
+        calcAccount(withdrawAccount, qrReqDto.getPayment(), MINUS);
+        calcAccount(depositAccount, qrReqDto.getPayment(), PLUS);
+
+        //매출 업데이트
+        calcRevenue(qrReqDto.getLessonId(), qrReqDto.getPayment());
 
         return new PayResDto().builder()
                 .transactionId(createdTransaction.getTransactionId())
@@ -88,22 +87,20 @@ public class TransactionServiceImpl implements TransactionService {
     public PayResDto simplePay(Long userId, SimpleReqDto simpleReqDto) {
         //호스트 계좌번호 가져오기
         LessonDateEntity lessonDateEntity = lessonDateRepository.findById(simpleReqDto.getLessondateId())
-                .orElse(null);
+                .orElseThrow(() -> new LessonDateNotFoundException());
         Long depositId = lessonDateEntity.getLessonEntity().getHostEntity().getAccountEntity().getAccountId();
 
-        //계좌 잔액 업데이트
-        AccountEntity withdrawAccount = calcAccount(simpleReqDto.getWithdrawId(), simpleReqDto.getPayment() - simpleReqDto.getPoint(), MINUS);
-        AccountEntity depositAccount = calcAccount(depositId, 0, ZERO);
-
-        //게스트 포인트 소멸
-        UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException());
-        userEntity.setPoint(userEntity.getPoint() - simpleReqDto.getPoint());
+        //계좌 가져오기
+        AccountEntity withdrawAccount = accountRepository.findById(simpleReqDto.getWithdrawId()).orElseThrow(() -> new AccountNotFoundException());
+        AccountEntity depositAccount = accountRepository.findById(depositId).orElseThrow(() -> new AccountNotFoundException());
 
         //거래 내역 저장 _ PENDING
         TransactionEntity transactionEntity = TransactionEntity.builder()
                 .depositAccount(depositAccount)
                 .withdrawAccount(withdrawAccount)
-                .reservationEntity(reservationRepository.findById(simpleReqDto.getReservationId()).get())
+                .reservationEntity(reservationRepository
+                        .findById(simpleReqDto.getReservationId())
+                        .orElseThrow(() -> new ReservationNotFounException()))
                 .payment(simpleReqDto.getPayment())
                 .point(simpleReqDto.getPoint())
                 .type(Type.PENDING)
@@ -118,6 +115,13 @@ public class TransactionServiceImpl implements TransactionService {
                 .build();
         hanastorageRepository.save(hanastorageEntity);
 
+        //계좌 잔액 업데이트
+        calcAccount(withdrawAccount, simpleReqDto.getPayment() - simpleReqDto.getPoint(), MINUS);
+
+        //게스트 포인트 소멸
+        UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException());
+        userEntity.setPoint(userEntity.getPoint() - simpleReqDto.getPoint());
+
         return new PayResDto().builder()
                 .transactionId(createdTransaction.getTransactionId())
                 .build();
@@ -126,17 +130,19 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     @Transactional
     public PayResDto payback(Long userId, PaybackReqDto paybackReqDto) {
-        //거래에서 거래 타입 변경
-        TransactionEntity transactionEntity = transactionRepository.findByReservationEntityReservationIdAndType(paybackReqDto.getReservationId(), Type.PENDING).orElseThrow();
+        //거래에서 거래 타입 변경 _ CANCELED
+        TransactionEntity transactionEntity = transactionRepository
+                .findByReservationEntityReservationIdAndType(paybackReqDto.getReservationId(), Type.PENDING)
+                .orElseThrow(() -> new TransactionNotFoundException());
         transactionEntity.setType(Type.CANCELED);
 
         //하나은행 저장소 삭제 처리
-        HanastorageEntity hanastorageEntity = hanastorageRepository.findByTransactionEntityTransactionId(transactionEntity.getTransactionId()).orElseThrow();
+        HanastorageEntity hanastorageEntity = hanastorageRepository.findByTransactionEntity(transactionEntity)
+                .orElseThrow(() -> new HanastorageNotFoundException());
         hanastorageEntity.setIsDeleted(true);
 
-        //게스트 계좌에 송금
-        Long guestAccountId = transactionEntity.getWithdrawAccount().getAccountId();
-        calcAccount(guestAccountId, transactionEntity.getPayment() - transactionEntity.getPoint(), PLUS);
+        //게스트 계좌 잔액 업데이트
+        calcAccount(transactionEntity.getWithdrawAccount(), transactionEntity.getPayment() - transactionEntity.getPoint(), PLUS);
 
         //게스트 포인트 적립
         UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException());
@@ -150,7 +156,12 @@ public class TransactionServiceImpl implements TransactionService {
     @Transactional
     public void autoTransfer(){
         LocalDate yesterday = LocalDate.now().minusDays(1);
-        List<HanastorageEntity> hanastorageEntityList = hanastorageRepository.findByLessondateAndIsDeleted(yesterday, false);
+        List<HanastorageEntity> hanastorageEntityList = hanastorageRepository.findByLessondateAndIsDeleted(yesterday, false)
+                .orElseThrow(() -> new HanastorageNotFoundException());
+        if(hanastorageEntityList.isEmpty()){
+            throw new HanastorageNotFoundException();
+        }
+
         hanastorageEntityList.forEach(this::doAutoTransfer);
     }
 
@@ -159,14 +170,13 @@ public class TransactionServiceImpl implements TransactionService {
         //하나은행 저장소 삭제 처리
         hanastorageEntity.setIsDeleted(true);
 
-        //거래에서 거래 타입 변경
+        //거래에서 거래 타입 변경 _ COMPLETED
         TransactionEntity transactionEntity = transactionRepository.findById(hanastorageEntity.getTransactionEntity().getTransactionId())
-                        .orElse(null);
+                        .orElseThrow(() -> new TransactionNotFoundException());
         transactionEntity.setType(Type.COMPLETED);
 
-        //호스트 계좌에 송금
-        Long hostAccountId = transactionEntity.getDepositAccount().getAccountId();
-        calcAccount(hostAccountId, transactionEntity.getPayment(), PLUS);
+        //호스트 계좌 잔액 업데이트
+        calcAccount(transactionEntity.getDepositAccount(), transactionEntity.getPayment(), PLUS);
 
         //매출 업데이트
         Long lessonId = transactionEntity
@@ -178,20 +188,13 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Transactional
-    private AccountEntity calcAccount(Long accountId, int payment, String type){
-        AccountEntity accountEntity = accountRepository.findById(accountId)
-                .orElseThrow(() -> new AccountNotFoundException());
-
+    private void calcAccount(AccountEntity accountEntity, int payment, String type){
         if(type.equals(PLUS)){
             accountEntity.setBalance(accountEntity.getBalance() + payment);
         } else if(type.equals(MINUS)) {
-            if(accountEntity.getBalance() < payment){
-                throw new AccountBalanceException();
-            }
+            if(accountEntity.getBalance() < payment) throw new AccountBalanceException();
             accountEntity.setBalance(accountEntity.getBalance() - payment);
         }
-
-        return accountEntity;
     }
 
     @Transactional
@@ -199,6 +202,7 @@ public class TransactionServiceImpl implements TransactionService {
         LocalDateTime startOfMonth = YearMonth.now().atDay(1).atStartOfDay();
         LocalDateTime endOfMonth = YearMonth.now().atEndOfMonth().atTime(23, 59, 59);
 
+        //없으면 그냥 이후의 로직을 처리함. 예외 처리 X.
         RevenueEntity revenueEntity = revenueRepository.findByCreatedDateBetween(startOfMonth, endOfMonth)
                 .orElse(null);
 
@@ -206,7 +210,7 @@ public class TransactionServiceImpl implements TransactionService {
             revenueEntity.setRevenue(revenueEntity.getRevenue() + payment);
         } else {
             RevenueEntity newRevenue = RevenueEntity.builder()
-                    .lessonEntity(lessonRepository.findById(lessonId).get())
+                    .lessonEntity(lessonRepository.findById(lessonId).orElseThrow(() -> new LessonNotFoundException()))
                     .revenue((long) payment)
                     .materialPrice(0)
                     .rentalPrice(0)

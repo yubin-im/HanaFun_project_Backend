@@ -29,7 +29,7 @@ public class TransactionEntity extends BaseEntity {
     private AccountEntity withdrawAccount;
 
     @ManyToOne
-    @JoinColumn(name = "reservation_id", nullable = false)
+    @JoinColumn(name = "reservation_id")
     private ReservationEntity reservationEntity;
 
     @Column(name = "payment", nullable = false)

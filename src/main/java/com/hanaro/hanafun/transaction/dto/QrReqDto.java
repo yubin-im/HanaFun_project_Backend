@@ -13,6 +13,5 @@ public class QrReqDto {
     private long withdrawId;
     private long depositId;
     private long lessonId;
-    private long lessondateId;
     private int payment;
 }

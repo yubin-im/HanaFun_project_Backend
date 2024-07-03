@@ -12,5 +12,5 @@ public interface ReservationRepository extends JpaRepository<ReservationEntity, 
     List<ReservationEntity> findReservationEntitiesByUserEntity(UserEntity userEntity);
     List<ReservationEntity> findReservationEntitiesByLessonDateEntity_LessondateId(Long lessondateId);
     Optional<ReservationEntity> findReservationEntityByUserEntity_UserIdAndLessonDateEntity_LessondateId(Long userId, Long lessondateId);
-    Optional<ReservationEntity> findByUserEntityUserIdAndLessonDateEntityLessondateId(Long userId, Long lessondateId);
+    Optional<ReservationEntity> findByUserEntityAndLessonDateEntityLessondateId(UserEntity userEntity, Long lessondateId);
 }
