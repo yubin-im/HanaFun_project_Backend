@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TotalRevenueResDto {
-    private long yearRevenue;
+    private long totalRevenue;
 }

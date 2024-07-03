@@ -33,8 +33,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public PointResDto readPoint(Long userId){
-        UserEntity userEntity = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException());
+        UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException());
 
         return new PointResDto().builder()
                 .point(userEntity.getPoint())
@@ -43,8 +42,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public IsHostResDto readIsHost(Long userId){
-        UserEntity userEntity = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException());
+        UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException());
 
         return new IsHostResDto().builder()
                 .isHost(userEntity.getIsHost())

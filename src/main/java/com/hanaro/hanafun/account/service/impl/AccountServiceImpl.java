@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,25 +20,20 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public List<AccountResDto> readAccountList(Long userId) {
-        List<AccountEntity> accountEntityList = accountRepository.findByUserEntityUserId(userId).orElseThrow(() -> new AccountNotFoundException());
-        if(accountEntityList.isEmpty()){
-            throw new AccountNotFoundException();
-        }
+        List<AccountEntity> accountEntityList = accountRepository.findByUserEntityUserId(userId)
+                .orElseThrow(() -> new AccountNotFoundException());
+        if(accountEntityList.isEmpty()) throw new AccountNotFoundException();
 
         return accountEntityList.stream().map(AccountMapper::entityToAccountResDto).toList();
     }
 
     @Override
     public PwResDto checkAccountPw(PwReqDto pwReqDto) {
-        AccountEntity accountEntity = accountRepository.findById(pwReqDto.getAccountId()).orElseThrow(() -> new AccountNotFoundException());
-        boolean check;
-        if(accountEntity.getPassword().equals(pwReqDto.getPassword())){
-            check = true;
-        } else{
-            check = false;
-        }
+        AccountEntity accountEntity = accountRepository.findById(pwReqDto.getAccountId())
+                .orElseThrow(() -> new AccountNotFoundException());
+
         return new PwResDto().builder()
-                .check(check)
+                .check(accountEntity.getPassword().equals(pwReqDto.getPassword()))
                 .build();
     }
 }
