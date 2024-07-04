@@ -60,8 +60,8 @@ public class LessonController {
 
     // 클래스 등록하기
     @PostMapping("/lesson/create")
-    public void createLesson(@RequestBody CreateLessonReqDto createLessonReqDto) {
-        lessonService.createLesson(createLessonReqDto);
+    public void createLesson(@AuthenticationPrincipal Long userId, @RequestBody CreateLessonReqDto createLessonReqDto) {
+        lessonService.createLesson(userId, createLessonReqDto);
     }
 
     // 클래스 전체 조회 (클래스 탐색)

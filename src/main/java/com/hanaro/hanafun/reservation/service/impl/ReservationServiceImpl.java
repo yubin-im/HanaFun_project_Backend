@@ -45,7 +45,7 @@ public class ReservationServiceImpl implements ReservationService {
         LocalDate today = LocalDate.now();  // 오늘이후 날짜의 예약만 출력
 
         List<ReservationList> lessons = reservations.stream()
-                .filter(reservation -> !reservation.getLessonDateEntity().getDate().isBefore(today))
+                .filter(reservation -> !reservation.getLessonDateEntity().getDate().isBefore(today) && !reservation.isDeleted())
                 .map(reservation -> {
                     LessonDateEntity lessonDate = reservation.getLessonDateEntity();
                     LessonEntity lessonEntity = lessonDate.getLessonEntity();
@@ -80,6 +80,7 @@ public class ReservationServiceImpl implements ReservationService {
         List<ReservationEntity> reservations = reservationRepository.findReservationEntitiesByUserEntity(user);
 
         List<ReservationList> lessons = reservations.stream()
+                .filter(reservation -> !reservation.isDeleted())
                 .map(reservation -> {
                     LessonDateEntity lessonDate = reservation.getLessonDateEntity();
                     LessonEntity lessonEntity = lessonDate.getLessonEntity();
@@ -165,7 +166,7 @@ public class ReservationServiceImpl implements ReservationService {
     // 클래스 예약하기 (결제 제외)
     @Transactional
     @Override
-    public BookLessonResDto bookLesson(BookLessonReqDto bookLessonReqDto) {
+    public BookLessonResDto bookLesson(Long userId, BookLessonReqDto bookLessonReqDto) {
         // 계좌 비밀번호 확인
         AccountEntity account = accountRepository.findById(bookLessonReqDto.getAccountId()).orElseThrow(() -> new AccountNotFoundException());
         if (!account.getPassword().equals(bookLessonReqDto.getPassword())) {
@@ -184,8 +185,7 @@ public class ReservationServiceImpl implements ReservationService {
         }
 
         // 해당 날짜에 예약 이미 있는지 확인
-        Optional<ReservationEntity> existingReservation = reservationRepository.findReservationEntityByUserEntity_UserIdAndLessonDateEntity_LessondateId(
-                bookLessonReqDto.getUserId(), bookLessonReqDto.getLessondateId());
+        Optional<ReservationEntity> existingReservation = reservationRepository.findReservationEntityByUserEntity_UserIdAndLessonDateEntity_LessondateId(userId, bookLessonReqDto.getLessondateId());
         if (existingReservation.isPresent()) {
             return BookLessonResDto.builder()
                     .message("이미 예약이 존재합니다.")
@@ -193,7 +193,7 @@ public class ReservationServiceImpl implements ReservationService {
         }
 
         // 예약 추가
-        UserEntity user = userRepository.findUserEntityByUserId(bookLessonReqDto.getUserId()).orElseThrow(() -> new UserNotFoundException());
+        UserEntity user = userRepository.findUserEntityByUserId(userId).orElseThrow(() -> new UserNotFoundException());
         ReservationEntity reservation = ReservationEntity.builder()
                 .userEntity(user)
                 .lessonDateEntity(lessonDate)
@@ -210,15 +210,24 @@ public class ReservationServiceImpl implements ReservationService {
         lessonRepository.save(lesson);
 
         return BookLessonResDto.builder()
-                .message("예약완료")
+                .message(String.valueOf(reservation.getReservationId()))
                 .build();
     }
 
     // 클래스 취소하기 (환불 제외)
     @Transactional
     @Override
-    public void cancelLesson(CancelLessonReqDto cancelLessonReqDto) {
-        ReservationEntity reservation = reservationRepository.findById(cancelLessonReqDto.getReservationId()).orElseThrow(() -> new ReservationNotFounException());
+    public CancelLessonResDto cancelLesson(CancelLessonReqDto cancelLessonReqDto) {
+        // 예약 조회
+        ReservationEntity reservation = reservationRepository.findById(cancelLessonReqDto.getReservationId()).orElse(null);
+
+        // 예약이 없는 경우
+        if (reservation == null) {
+            return CancelLessonResDto.builder()
+                    .isSuccess(false)
+                    .message("취소 실패: 예약을 찾을 수 없습니다.")
+                    .build();
+        }
 
         // 클래스 취소 (논리적 삭제)
         reservation.updateIsDeleted(true);
@@ -233,5 +242,11 @@ public class ReservationServiceImpl implements ReservationService {
         LessonEntity lesson = lessonDate.getLessonEntity();
         lesson.updateApplicantSum(lesson.getApplicantSum() - reservation.getApplicant());
         lessonRepository.save(lesson);
+
+        // 취소 성공 response
+        return CancelLessonResDto.builder()
+                .isSuccess(true)
+                .message("취소 성공")
+                .build();
     }
 }

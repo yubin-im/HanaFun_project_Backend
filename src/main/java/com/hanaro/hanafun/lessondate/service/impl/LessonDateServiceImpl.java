@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -48,7 +50,10 @@ public class LessonDateServiceImpl implements LessonDateService {
     public List<AvailableDateResDto> availableDate(AvailableDateReqDto availableDateReqDto) {
         List<LessonDateEntity> lessonDates = lessonDateRepository.findLessonDateEntitiesByLessonEntity_LessonId(availableDateReqDto.getLessonId());
 
+        LocalDate today = LocalDate.now();
+
         List<AvailableDateResDto> availableDateResDtos = lessonDates.stream()
+                .filter(lessonDate -> lessonDate.getDate().isAfter(today) || lessonDate.getDate().isEqual(today))
                 .map(lessonDate -> {
                     LessonEntity lesson = lessonDate.getLessonEntity();
                     int quantityLeft = lesson.getCapacity() - lessonDate.getApplicant();
@@ -67,6 +72,7 @@ public class LessonDateServiceImpl implements LessonDateService {
                             .build();
                 })
                 .filter(Objects::nonNull)
+                .sorted(Comparator.comparing(AvailableDateResDto::getDate))
                 .collect(Collectors.toList());
 
         return availableDateResDtos;

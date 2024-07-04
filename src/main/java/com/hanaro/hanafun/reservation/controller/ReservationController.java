@@ -54,14 +54,14 @@ public class ReservationController {
 
     // 클래스 예약하기 (결제 제외)
     @PostMapping("/check")
-    public ResponseEntity<ApiResponse> bookLesson(@RequestBody BookLessonReqDto bookLessonReqDto) {
-        BookLessonResDto bookLessonResDto = reservationService.bookLesson(bookLessonReqDto);
+    public ResponseEntity<ApiResponse> bookLesson(@AuthenticationPrincipal Long userId, @RequestBody BookLessonReqDto bookLessonReqDto) {
+        BookLessonResDto bookLessonResDto = reservationService.bookLesson(userId, bookLessonReqDto);
         return ResponseEntity.ok(new ApiResponse<>(true, "ok", bookLessonResDto));
     }
 
     // 클래스 취소하기 (환불 제외)
     @PostMapping("/cancel")
-    public void cancelLesson(@RequestBody CancelLessonReqDto cancelLessonReqDto) {
-        reservationService.cancelLesson(cancelLessonReqDto);
+    public CancelLessonResDto cancelLesson(@RequestBody CancelLessonReqDto cancelLessonReqDto) {
+        return reservationService.cancelLesson(cancelLessonReqDto);
     }
 }
