@@ -1,10 +1,12 @@
 package com.hanaro.hanafun.lesson.dto.request;
 
+import lombok.Builder;
 import lombok.Getter;
 
 import java.util.List;
 
 @Getter
+@Builder
 public class CreateLessonReqDto {
     private Long categoryId;
     private String title;
