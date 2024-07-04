@@ -12,6 +12,7 @@ import com.hanaro.hanafun.lesson.exception.LessonNotFoundException;
 import com.hanaro.hanafun.lessondate.domain.LessonDateEntity;
 import com.hanaro.hanafun.lessondate.domain.LessonDateRepository;
 import com.hanaro.hanafun.lessondate.exception.LessonDateNotFoundException;
+import com.hanaro.hanafun.reservation.domain.ReservationEntity;
 import com.hanaro.hanafun.reservation.domain.ReservationRepository;
 import com.hanaro.hanafun.reservation.exception.ReservationNotFounException;
 import com.hanaro.hanafun.revenue.domain.RevenueEntity;
@@ -30,6 +31,7 @@ import com.hanaro.hanafun.user.domain.UserRepository;
 import com.hanaro.hanafun.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -83,7 +85,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    @Transactional
+    @Transactional(noRollbackFor = {AccountBalanceException.class})
     public PayResDto simplePay(Long userId, SimpleReqDto simpleReqDto) {
         //호스트 계좌번호 가져오기
         LessonDateEntity lessonDateEntity = lessonDateRepository.findById(simpleReqDto.getLessondateId())
@@ -91,16 +93,26 @@ public class TransactionServiceImpl implements TransactionService {
         Long depositId = lessonDateEntity.getLessonEntity().getHostEntity().getAccountEntity().getAccountId();
 
         //계좌 가져오기
-        AccountEntity withdrawAccount = accountRepository.findById(simpleReqDto.getWithdrawId()).orElseThrow(() -> new AccountNotFoundException());
-        AccountEntity depositAccount = accountRepository.findById(depositId).orElseThrow(() -> new AccountNotFoundException());
+        AccountEntity withdrawAccount = accountRepository.findById(simpleReqDto.getWithdrawId())
+                .orElseThrow(() -> new AccountNotFoundException());
+        AccountEntity depositAccount = accountRepository.findById(depositId)
+                .orElseThrow(() -> new AccountNotFoundException());
+
+        //예약 가져오기
+        ReservationEntity reservationEntity = reservationRepository.findById(simpleReqDto.getReservationId())
+                .orElseThrow(() -> new ReservationNotFounException());
+
+        //잔액 없으면 예약 취소
+        if(withdrawAccount.getBalance() < simpleReqDto.getPayment() - simpleReqDto.getPoint()) {
+            cancelReservation(reservationEntity);
+            throw new AccountBalanceException();
+        }
 
         //거래 내역 저장 _ PENDING
         TransactionEntity transactionEntity = TransactionEntity.builder()
                 .depositAccount(depositAccount)
                 .withdrawAccount(withdrawAccount)
-                .reservationEntity(reservationRepository
-                        .findById(simpleReqDto.getReservationId())
-                        .orElseThrow(() -> new ReservationNotFounException()))
+                .reservationEntity(reservationEntity)
                 .payment(simpleReqDto.getPayment())
                 .point(simpleReqDto.getPoint())
                 .type(Type.PENDING)
@@ -125,6 +137,12 @@ public class TransactionServiceImpl implements TransactionService {
         return new PayResDto().builder()
                 .transactionId(createdTransaction.getTransactionId())
                 .build();
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void cancelReservation(ReservationEntity reservationEntity){
+        reservationEntity.updateIsDeleted(true);
+        reservationRepository.save(reservationEntity);
     }
 
     @Override
