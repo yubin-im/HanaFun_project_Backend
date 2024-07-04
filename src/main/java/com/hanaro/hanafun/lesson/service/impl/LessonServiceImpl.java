@@ -9,7 +9,6 @@ import com.hanaro.hanafun.lesson.domain.LessonEntity;
 import com.hanaro.hanafun.lesson.domain.LessonRepository;
 import com.hanaro.hanafun.lesson.dto.request.CreateLessonDateReqDto;
 import com.hanaro.hanafun.lesson.dto.request.CreateLessonReqDto;
-import com.hanaro.hanafun.lesson.dto.request.OpenedLessonsReqDto;
 import com.hanaro.hanafun.lesson.dto.response.FullLessonResDto;
 import com.hanaro.hanafun.lesson.dto.response.LessonInfoResDto;
 import com.hanaro.hanafun.lesson.dto.response.OpenedLessonsResDto;
@@ -18,12 +17,10 @@ import com.hanaro.hanafun.lesson.service.LessonService;
 import com.hanaro.hanafun.lessondate.domain.LessonDateEntity;
 import com.hanaro.hanafun.lessondate.domain.LessonDateRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
