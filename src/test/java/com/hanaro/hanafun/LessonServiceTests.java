@@ -143,7 +143,7 @@ public class LessonServiceTests {
         when(lessonRepository.findById(lessonId1)).thenReturn(Optional.of(lesson1));
 
         // When
-        LessonInfoResDto result = lessonService.lessonInfo(lessonId1);
+        LessonInfoResDto result = lessonService.lessonInfo(userId1, lessonId1);
 
         // Then
         assertEquals(lessonId1, result.getLessonId());
@@ -164,7 +164,7 @@ public class LessonServiceTests {
 
         // When, Then
         assertThrows(LessonNotFoundException.class, () -> {
-            lessonService.lessonInfo(lessonId1);
+            lessonService.lessonInfo(userId1, lessonId1);
         });
     }
 

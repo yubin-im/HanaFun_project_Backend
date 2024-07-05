@@ -13,7 +13,7 @@ public interface LessonService {
     List<OpenedLessonsResDto> openedLessons(Long userId);
 
     // 클래스 상세보기
-    LessonInfoResDto lessonInfo(Long lessonId);
+    LessonInfoResDto lessonInfo(Long userId, Long lessonId);
 
     // 클래스 등록하기
     void createLesson(Long userId, CreateLessonReqDto createLessonReqDto);
