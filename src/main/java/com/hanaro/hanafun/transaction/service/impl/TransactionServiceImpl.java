@@ -7,6 +7,7 @@ import com.hanaro.hanafun.account.exception.AccountNotFoundException;
 import com.hanaro.hanafun.hanastorage.domain.HanastorageEntity;
 import com.hanaro.hanafun.hanastorage.domain.HanastorageRepository;
 import com.hanaro.hanafun.hanastorage.exception.HanastorageNotFoundException;
+import com.hanaro.hanafun.lesson.domain.LessonEntity;
 import com.hanaro.hanafun.lesson.domain.LessonRepository;
 import com.hanaro.hanafun.lesson.exception.LessonNotFoundException;
 import com.hanaro.hanafun.lessondate.domain.LessonDateEntity;
@@ -217,11 +218,14 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Transactional
     private void calcRevenue(Long lessonId, int payment){
+        LessonEntity lessonEntity = lessonRepository.findById(lessonId).orElseThrow(() -> new LessonNotFoundException());
+
+        //달의 시작과 끝을 설정.
         LocalDateTime startOfMonth = YearMonth.now().atDay(1).atStartOfDay();
         LocalDateTime endOfMonth = YearMonth.now().atEndOfMonth().atTime(23, 59, 59);
 
         //없으면 그냥 이후의 로직을 처리함. 예외 처리 X.
-        RevenueEntity revenueEntity = revenueRepository.findByCreatedDateBetween(startOfMonth, endOfMonth)
+        RevenueEntity revenueEntity = revenueRepository.findByLessonEntityAndCreatedDateBetween(lessonEntity, startOfMonth, endOfMonth)
                 .orElse(null);
 
         if (revenueEntity != null) {
@@ -234,7 +238,8 @@ public class TransactionServiceImpl implements TransactionService {
                     .rentalPrice(0)
                     .etcPrice(0)
                     .build();
-            revenueRepository.save(newRevenue);
+            RevenueEntity testR = revenueRepository.save(newRevenue);
+            System.out.println("isCOME? " + testR.getRevenue());
         }
     }
 }

@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface RevenueRepository extends JpaRepository<RevenueEntity, Long> {
-    Optional<RevenueEntity> findByCreatedDateBetween(LocalDateTime startDateTime, LocalDateTime endDateTime);
     @Query(value = "SELECT SUM(R.revenue) FROM RevenueEntity R WHERE R.lessonEntity = :lessonEntity")
     Long totalRevenueByLessonId(@Param("lessonEntity") LessonEntity lessonEntity);
     Optional<RevenueEntity> findByLessonEntityAndCreatedDateBetween(LessonEntity lessonEntity, LocalDateTime startDateTime, LocalDateTime endDateTime);

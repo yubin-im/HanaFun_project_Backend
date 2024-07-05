@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 public class CreateLessonDateReqDto {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;

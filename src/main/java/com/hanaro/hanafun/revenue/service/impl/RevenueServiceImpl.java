@@ -21,6 +21,7 @@ import java.time.Year;
 import java.time.YearMonth;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,7 +44,7 @@ public class RevenueServiceImpl implements RevenueService {
 
         return new TotalRevenueResDto().builder()
                 .totalRevenue(lessonEntityList.stream()
-                        .mapToLong(lessonEntity -> revenueRepository.totalRevenueByLessonId(lessonEntity))
+                        .mapToLong(lessonEntity -> Optional.ofNullable(revenueRepository.totalRevenueByLessonId(lessonEntity)).orElse(0L))
                         .sum())
                 .build();
     }
