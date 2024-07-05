@@ -10,7 +10,6 @@ import java.util.List;
 @Getter
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 public class CreateLessonReqDto {
     private Long categoryId;
     private String title;
