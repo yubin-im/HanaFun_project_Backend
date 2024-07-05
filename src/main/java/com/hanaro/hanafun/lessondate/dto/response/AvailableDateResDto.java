@@ -1,13 +1,17 @@
 package com.hanaro.hanafun.lessondate.dto.response;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class AvailableDateResDto {
     private Long lessondateId;
     private LocalDate date;
