@@ -182,6 +182,7 @@ public class LessonServiceImpl implements LessonService {
                     .title(lesson.getTitle())
                     .price(lesson.getPrice())
                     .hostName(lesson.getHostEntity().getUserEntity().getUsername())
+                    .applicantSum(lesson.getApplicantSum())
                     .build();
             return fullLessonResDto;
         }).collect(Collectors.toList());
