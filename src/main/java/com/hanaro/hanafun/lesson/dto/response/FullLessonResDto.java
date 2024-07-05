@@ -11,4 +11,5 @@ public class FullLessonResDto {
     private String title;
     private int price;
     private String hostName;
+    private int applicantSum;
 }

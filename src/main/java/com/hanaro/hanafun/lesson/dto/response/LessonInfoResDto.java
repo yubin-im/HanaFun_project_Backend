@@ -15,4 +15,5 @@ public class LessonInfoResDto {
     private String materials;
     private int capacity;
     private String categoryName;
+    private boolean isHostMe;
 }

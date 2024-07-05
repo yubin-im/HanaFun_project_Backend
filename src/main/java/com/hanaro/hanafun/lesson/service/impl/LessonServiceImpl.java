@@ -16,6 +16,8 @@ import com.hanaro.hanafun.lesson.exception.LessonNotFoundException;
 import com.hanaro.hanafun.lesson.service.LessonService;
 import com.hanaro.hanafun.lessondate.domain.LessonDateEntity;
 import com.hanaro.hanafun.lessondate.domain.LessonDateRepository;
+import com.hanaro.hanafun.user.domain.UserEntity;
+import com.hanaro.hanafun.user.domain.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,8 +57,16 @@ public class LessonServiceImpl implements LessonService {
     // 클래스 상세보기
     @Transactional
     @Override
-    public LessonInfoResDto lessonInfo(Long lessonId) {
+    public LessonInfoResDto lessonInfo(Long userId, Long lessonId) {
         LessonEntity lesson = lessonRepository.findById(lessonId).orElseThrow(() -> new LessonNotFoundException());
+
+        // 해당 클래스의 호스트가 로그인한 유저인지 확인
+        boolean isHostMe;
+        if(userId.equals(lesson.getHostEntity().getUserEntity().getUserId())) {
+            isHostMe = true;
+        } else {
+            isHostMe = false;
+        }
 
         LessonInfoResDto lessonInfoResDto = LessonInfoResDto.builder()
                 .lessonId(lessonId)
@@ -68,6 +78,7 @@ public class LessonServiceImpl implements LessonService {
                 .materials(lesson.getMaterials())
                 .capacity(lesson.getCapacity())
                 .categoryName(lesson.getCategoryEntity().getCategoryName())
+                .isHostMe(isHostMe)
                 .build();
 
         return lessonInfoResDto;
@@ -182,6 +193,7 @@ public class LessonServiceImpl implements LessonService {
                     .title(lesson.getTitle())
                     .price(lesson.getPrice())
                     .hostName(lesson.getHostEntity().getUserEntity().getUsername())
+                    .applicantSum(lesson.getApplicantSum())
                     .build();
             return fullLessonResDto;
         }).collect(Collectors.toList());

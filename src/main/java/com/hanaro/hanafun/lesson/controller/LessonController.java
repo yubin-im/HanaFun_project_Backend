@@ -42,8 +42,8 @@ public class LessonController {
 
     // 클래스 상세보기
     @GetMapping("/lesson/{lessonId}")
-    public ResponseEntity<ApiResponse> lessonInfo(@PathVariable Long lessonId) {
-        LessonInfoResDto lessonInfoResDto = lessonService.lessonInfo(lessonId);
+    public ResponseEntity<ApiResponse> lessonInfo(@AuthenticationPrincipal Long userId, @PathVariable Long lessonId) {
+        LessonInfoResDto lessonInfoResDto = lessonService.lessonInfo(userId, lessonId);
         return ResponseEntity.ok(new ApiResponse<>(true, "ok", lessonInfoResDto));
     }
 
