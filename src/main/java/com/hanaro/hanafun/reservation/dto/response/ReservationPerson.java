@@ -15,4 +15,5 @@ public class ReservationPerson {
     private LocalDateTime startTime;
     private String userName;
     private String email;
+    private int applicant;
 }
