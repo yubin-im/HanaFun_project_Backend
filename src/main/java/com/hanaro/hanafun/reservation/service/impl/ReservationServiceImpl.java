@@ -189,7 +189,7 @@ public class ReservationServiceImpl implements ReservationService {
 
         // 해당 날짜에 예약 이미 있는지 확인
         Optional<ReservationEntity> existingReservation = reservationRepository.findReservationEntityByUserEntity_UserIdAndLessonDateEntity_LessondateId(userId, bookLessonReqDto.getLessondateId());
-        if (existingReservation.isPresent()) {
+        if (existingReservation.isPresent() && !existingReservation.get().isDeleted()) {
             return BookLessonResDto.builder()
                     .message("이미 예약이 존재합니다.")
                     .build();
