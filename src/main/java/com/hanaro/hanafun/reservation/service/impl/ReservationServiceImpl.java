@@ -110,6 +110,7 @@ public class ReservationServiceImpl implements ReservationService {
         List<ReservationEntity> reservations = reservationRepository.findReservationEntitiesByUserEntity(user);
 
         List<MyScheduleResDto> mySchedules = reservations.stream()
+                .filter(reservation -> !reservation.isDeleted())
                 .filter(reservation -> {
                     LocalDate date = reservation.getLessonDateEntity().getDate();
                     return date.getYear() == myScheduleReqDto.getYear() && date.getMonthValue() == myScheduleReqDto.getMonth();
@@ -144,6 +145,7 @@ public class ReservationServiceImpl implements ReservationService {
         int capacity = lessonDate.getLessonEntity().getCapacity();  // 모집인원
 
         List<ReservationPerson> people = reservations.stream()
+                .filter(reservation -> !reservation.isDeleted())
                 .map(reservation -> {
                     ReservationPerson person = ReservationPerson.builder()
                             .startTime(lessonDate.getStartTime())
