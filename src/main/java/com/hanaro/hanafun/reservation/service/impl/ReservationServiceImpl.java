@@ -149,6 +149,7 @@ public class ReservationServiceImpl implements ReservationService {
                             .startTime(lessonDate.getStartTime())
                             .userName(reservation.getUserEntity().getUsername())
                             .email(reservation.getUserEntity().getEmail())
+                            .applicant(reservation.getApplicant())
                             .build();
                     return person;
                 })
