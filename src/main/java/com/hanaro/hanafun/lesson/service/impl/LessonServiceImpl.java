@@ -41,6 +41,7 @@ public class LessonServiceImpl implements LessonService {
         List<LessonEntity> lessons = lessonRepository.findLessonEntitiesByHostEntity(host);
 
         List<OpenedLessonsResDto> openedLessons = lessons.stream()
+                .filter(lesson -> !lesson.isDeleted())
                 .map(lesson -> {
                     OpenedLessonsResDto openedLesson = OpenedLessonsResDto.builder()
                             .lessonId(lesson.getLessonId())
@@ -186,16 +187,18 @@ public class LessonServiceImpl implements LessonService {
     }
 
     public List<FullLessonResDto> searchLessonList(List<LessonEntity> lessonlist){
-        return lessonlist.stream().map(lesson -> {
-            FullLessonResDto fullLessonResDto = FullLessonResDto.builder()
-                    .lessonId(lesson.getLessonId())
-                    .image(lesson.getImage())
-                    .title(lesson.getTitle())
-                    .price(lesson.getPrice())
-                    .hostName(lesson.getHostEntity().getUserEntity().getUsername())
-                    .applicantSum(lesson.getApplicantSum())
-                    .build();
-            return fullLessonResDto;
-        }).collect(Collectors.toList());
+        return lessonlist.stream()
+                .filter(lesson -> !lesson.isDeleted())
+                .map(lesson -> {
+                    FullLessonResDto fullLessonResDto = FullLessonResDto.builder()
+                            .lessonId(lesson.getLessonId())
+                            .image(lesson.getImage())
+                            .title(lesson.getTitle())
+                            .price(lesson.getPrice())
+                            .hostName(lesson.getHostEntity().getUserEntity().getUsername())
+                            .applicantSum(lesson.getApplicantSum())
+                            .build();
+                    return fullLessonResDto;
+                }).collect(Collectors.toList());
     }
 }
