@@ -225,7 +225,7 @@ public class ReservationServiceImpl implements ReservationService {
         ReservationEntity reservation = reservationRepository.findById(cancelLessonReqDto.getReservationId()).orElse(null);
 
         // 예약이 없는 경우
-        if (reservation == null) {
+        if (reservation == null || reservation.isDeleted()) {
             return CancelLessonResDto.builder()
                     .isSuccess(false)
                     .message("취소 실패: 예약을 찾을 수 없습니다.")
